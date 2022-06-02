@@ -5,17 +5,38 @@ import Input from '@mui/material/Input';
 import Divider from '@mui/material/Divider';
 import axios from 'axios';
 
-function EditNotes() {
+function EditNotes(props) {
+    const [note, setNote] = React.useState({id: '', heading: '', body: ''});
+
+    React.useEffect(() => {
+        if(note.body !== '' && note.heading !== '') {
+            let interval = setTimeout(() => {
+                console.log(note)
+                axios.post(`http://localhost:5000/updatenote/`, note)
+            }, 5000)
+            return () => {
+                clearTimeout(interval)
+            }
+        }
+    }, [note])
+
+    React.useEffect(() => {
+        if(props.selectedNote !== '') {
+            axios.get(`http://localhost:5000/getnote/${props.selectedNote}`)
+                .then((res) => setNote(res.data))
+        }
+    },[props.selectedNote])
+
     return (
         <Box sx={{ border: '2px solid black', boxSizing: 'border-box', backgroundColor: '#fff391', borderRadius: '5px', width: '70%', height: 500, margin: '0px 5px', padding: '15px 0px' }}>
             <div style={{ height: '100%', overflowY: 'auto' }}>
                 <Container maxWidth='lg'>
-                    <Input disableUnderline multiline fullWidth sx={{ fontSize: '34px', marginBottom: '10px', fontWeight: 700 }} placeholder='Untitled Note Heading' onChange={(e) => {
-                        axios.post('http://localhost:5000/editnotes/heading',JSON.stringify({ heading: e.target.value }))
+                    <Input disableUnderline multiline fullWidth sx={{ fontSize: '34px', marginBottom: '10px', fontWeight: 700 }} placeholder='Untitled Note Heading' value={note.heading} onChange={(e) => {
+                        setNote({...note, heading: e.target.value})
                     }}/>
                     <Divider />
-                    <Input disableUnderline multiline fullWidth sx={{ fontSize: '18px', marginTop: '15px' }} placeholder='Start writing your note here...' onChange={(e) => {
-                        axios.post('http://localhost:5000/editnotes/body',JSON.stringify({ body: e.target.value }))
+                    <Input disableUnderline multiline fullWidth sx={{ fontSize: '18px', marginTop: '15px' }} placeholder='Start writing your note here...' value={note.body} onChange={(e) => {
+                        setNote({...note, body: e.target.value})
                     }}/>
                 </Container>
             </div>
