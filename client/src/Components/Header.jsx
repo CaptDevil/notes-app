@@ -4,6 +4,9 @@ import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
+import TextField from '@mui/material/TextField';
+import Paper from '@mui/material/Paper';
+import Divider from '@mui/material/Divider';
 
 const style = {
     position: 'absolute',
@@ -17,21 +20,43 @@ const style = {
 };
 
 function Header() {
-    const [aboutButton, setAboutButton] = React.useState(false);
+    const [loginButton, setLoginButton] = React.useState(false);
+
+    React.useEffect(() => {
+        
+    })
+
     return (
         <Container maxWidth='md'>
             <div style={{ margin: '20px 5px', display: 'flex', justifyContent: 'space-between' }}>
                 <Typography variant='h5' >Notes App</Typography>
-                <Button variant='text' size='small' onClick={() => setAboutButton(true)}>About Us</Button>
+                <Button variant='text' size='small' onClick={() => setLoginButton(true)}>About Us</Button>
                 <Modal
-                    open={aboutButton}
-                    onClose={() => setAboutButton(false)}
+                    open={loginButton}
+                    onClose={() => setLoginButton(false)}
                     aria-labelledby="parent-modal-title"
                     aria-describedby="parent-modal-description"
                     >
-                    <Box sx={{ ...style, width: 400 }}>
-                        <Typography variant='h5'>About Us</Typography>
-                        <Typography variant='body1'>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Consequatur veritatis quod incidunt eveniet fugit optio nemo, nostrum rerum ex laborum suscipit sed eius, beatae ad maiores error! Perferendis, aliquid commodi.</Typography>
+                    <Box sx={{ ...style, width: '50%', display: 'flex', justifyContent: 'space-evenly' }}>
+                        <Paper elevation={0} sx={{ float: 'left', width: '45%', padding: '2px 5px' }}>
+                            <Typography variant='h5'>Register</Typography>
+                            <form>
+                                <TextField fullWidth sx={{ marginTop: '15px' }} variant='standard' color='info' size='small' label='Name' placeholder='Adam Reed' />
+                                <TextField fullWidth sx={{ marginTop: '15px' }} variant='standard' color='info' size='small' label='Email' placeholder='adam@email.com' />
+                                <TextField fullWidth sx={{ marginTop: '15px' }} variant='standard' color='info' size='small' label='Password' />
+                                <TextField fullWidth sx={{ marginTop: '15px' }} variant='standard' color='info' size='small' label='Confirm Password' />
+                                <Button sx={{ margin: '20px 0', float: 'right' }} size='small' variant='outlined' color='info'>Register</Button>
+                            </form>
+                        </Paper>
+                        <Divider orientation='vertical' flexItem  />
+                        <Paper elevation={0} sx={{ float: 'right', width: '45%', padding: '2px 5px' }}>
+                            <Typography variant='h5'>Login</Typography>
+                            <form>
+                                <TextField fullWidth sx={{ marginTop: '25px' }} variant='outlined' color='success' focused size='small' label='Email' placeholder='adam@email.com' />
+                                <TextField fullWidth sx={{ marginTop: '25px' }} variant='outlined' color='success' focused size='small' label='Password' />
+                                <Button sx={{ margin: '20px 0', float: 'right' }} size='small' variant='contained' color='success'>Login</Button>
+                            </form>
+                        </Paper>
                     </Box>
                 </Modal>
             </div>

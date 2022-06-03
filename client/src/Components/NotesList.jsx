@@ -17,7 +17,7 @@ function NotesList(props) {
     const [notes, setNotes] = React.useState([]);
     
     React.useEffect(() => {
-        axios.get('http://localhost:5000/')
+        axios.get('http://localhost:5000/allnotes')
             .then((res) => setNotes(res.data))
     })
 
