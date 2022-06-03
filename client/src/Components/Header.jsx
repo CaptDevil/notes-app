@@ -7,6 +7,7 @@ import Modal from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
 import Paper from '@mui/material/Paper';
 import Divider from '@mui/material/Divider';
+import axios from 'axios';
 
 const style = {
     position: 'absolute',
@@ -20,11 +21,19 @@ const style = {
 };
 
 function Header() {
-    const [loginButton, setLoginButton] = React.useState(false);
+    const [loginButton, setLoginButton] = React.useState(true);
+    const [registerDetails, setRegisterDetails] = React.useState({ name: '', email: '', password: '', password1: '' });
+    const [loginDetails, setLoginDetails] = React.useState({ email: '', password: '' });
 
     React.useEffect(() => {
-        
-    })
+        if(registerDetails.name === '' && registerDetails.email === '' && registerDetails.password === '' && registerDetails.password1 === '')
+            console.log(localStorage.getItem('user'))
+    }, [registerDetails])
+
+    React.useEffect(() => {
+        if(loginDetails.email === '' && loginDetails.password === '')
+            console.log(localStorage.getItem('user'))
+    }, [loginDetails])
 
     return (
         <Container maxWidth='md'>
@@ -40,21 +49,42 @@ function Header() {
                     <Box sx={{ ...style, width: '50%', display: 'flex', justifyContent: 'space-evenly' }}>
                         <Paper elevation={0} sx={{ float: 'left', width: '45%', padding: '2px 5px' }}>
                             <Typography variant='h5'>Register</Typography>
-                            <form>
-                                <TextField fullWidth sx={{ marginTop: '15px' }} variant='standard' color='info' size='small' label='Name' placeholder='Adam Reed' />
-                                <TextField fullWidth sx={{ marginTop: '15px' }} variant='standard' color='info' size='small' label='Email' placeholder='adam@email.com' />
-                                <TextField fullWidth sx={{ marginTop: '15px' }} variant='standard' color='info' size='small' label='Password' />
-                                <TextField fullWidth sx={{ marginTop: '15px' }} variant='standard' color='info' size='small' label='Confirm Password' />
-                                <Button sx={{ margin: '20px 0', float: 'right' }} size='small' variant='outlined' color='info'>Register</Button>
+                            <form onSubmit={(e) => {
+                                e.preventDefault()
+                                console.log(registerDetails)
+                                axios.post('http://localhost:5000/registeruser', registerDetails)
+                                    .then((res) => {
+                                        if(res.data === 'registered') {
+                                            localStorage.setItem('user', registerDetails.email)
+                                            setRegisterDetails({ name: '', email: '', password: '', password1: '' })
+                                        }
+                                    })
+                                    .catch((err) => console.log(err))
+                            }}>
+                                <TextField fullWidth sx={{ marginTop: '15px' }} variant='standard' color='info' type='text' size='small' label='Name' value={registerDetails.name} placeholder='Adam Reed' onChange={(e) => setRegisterDetails({...registerDetails, name: e.target.value})} />
+                                <TextField fullWidth sx={{ marginTop: '15px' }} variant='standard' color='info' type='email' size='small' label='Email' value={registerDetails.email} placeholder='adam@email.com' onChange={(e) => setRegisterDetails({...registerDetails, email: e.target.value})} />
+                                <TextField fullWidth sx={{ marginTop: '15px' }} variant='standard' color='info' type='password' size='small' label='Password' value={registerDetails.password} onChange={(e) => setRegisterDetails({...registerDetails, password: e.target.value})} />
+                                <TextField fullWidth sx={{ marginTop: '15px' }} variant='standard' color='info' type='password' size='small' label='Confirm Password' value={registerDetails.password1} onChange={(e) => setRegisterDetails({...registerDetails, password1: e.target.value})} />
+                                <Button type='submit' sx={{ margin: '20px 0', float: 'right' }} size='small' variant='outlined' color='info'>Register</Button>
                             </form>
                         </Paper>
                         <Divider orientation='vertical' flexItem  />
                         <Paper elevation={0} sx={{ float: 'right', width: '45%', padding: '2px 5px' }}>
                             <Typography variant='h5'>Login</Typography>
-                            <form>
-                                <TextField fullWidth sx={{ marginTop: '25px' }} variant='outlined' color='success' focused size='small' label='Email' placeholder='adam@email.com' />
-                                <TextField fullWidth sx={{ marginTop: '25px' }} variant='outlined' color='success' focused size='small' label='Password' />
-                                <Button sx={{ margin: '20px 0', float: 'right' }} size='small' variant='contained' color='success'>Login</Button>
+                            <form onSubmit={(e) => {
+                                e.preventDefault()
+                                console.log(loginDetails)
+                                axios.post('http://localhost:5000/loginuser', loginDetails)
+                                    .then((res) => {
+                                        if(res.data === 'right') {
+                                            localStorage.setItem('user', loginDetails.email)
+                                        }
+                                    })
+                                    .catch((err) => console.log(err))
+                            }}>
+                                <TextField fullWidth sx={{ marginTop: '25px' }} variant='outlined' type='email' color='success' focused size='small' label='Email' value={loginDetails.email} placeholder='adam@email.com' onChange={(e) => setLoginDetails({...loginDetails, email: e.target.value})} />
+                                <TextField fullWidth sx={{ marginTop: '25px' }} variant='outlined' type='password' color='success' focused size='small' label='Password' value={loginDetails.password} onChange={(e) => setLoginDetails({...loginDetails, password: e.target.value})} />
+                                <Button type='submit' sx={{ margin: '20px 0', float: 'right' }} size='small' variant='contained' color='success'>Login</Button>
                             </form>
                         </Paper>
                     </Box>

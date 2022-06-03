@@ -31,5 +31,15 @@ app.post('/updatenote',(req,res) => {
     notes[parseInt(req.body.id)-1] = req.body;
 })
 
+app.post('/registeruser', (req,res) => {
+    console.log(req.body)
+    res.send('registered');
+})
+
+app.post('/loginuser', (req,res) => {
+    console.log(req.body)
+    res.send('right');
+})
+
 const port = process.env.PORT;
 app.listen(port, () => console.log(`Server started on port ${port}...`))
