@@ -19,7 +19,7 @@ const notes = [
     {id: '5', heading: 'heading 5', body: 'this is note\nhello'}
 ]
 
-app.get('/',(req,res) => {
+app.get('/allnotes',(req,res) => {
     res.send(JSON.stringify(notes))
 })
 
