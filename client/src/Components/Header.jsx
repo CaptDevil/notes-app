@@ -20,26 +20,25 @@ const style = {
     p: 4,
 };
 
-function Header() {
-    const [loginButton, setLoginButton] = React.useState(true);
+function Header(props) {
+    const [loginButton, setLoginButton] = React.useState(false);
     const [registerDetails, setRegisterDetails] = React.useState({ name: '', email: '', password: '', password1: '' });
     const [loginDetails, setLoginDetails] = React.useState({ email: '', password: '' });
 
     React.useEffect(() => {
-        if(registerDetails.name === '' && registerDetails.email === '' && registerDetails.password === '' && registerDetails.password1 === '')
-            console.log(localStorage.getItem('user'))
-    }, [registerDetails])
-
-    React.useEffect(() => {
-        if(loginDetails.email === '' && loginDetails.password === '')
-            console.log(localStorage.getItem('user'))
-    }, [loginDetails])
+        if(props.user === null)
+            setLoginButton(true)
+    }, [props.user])
 
     return (
         <Container maxWidth='md'>
             <div style={{ margin: '20px 5px', display: 'flex', justifyContent: 'space-between' }}>
                 <Typography variant='h5' >Notes App</Typography>
-                <Button variant='text' size='small' onClick={() => setLoginButton(true)}>About Us</Button>
+                { (props.user === null) ? <Button variant='text' size='small' onClick={() => setLoginButton(true)}>Login</Button> : <Button variant='text' size='small' onClick={() => {
+                    localStorage.removeItem('user')
+                    props.setUser('')
+                    setLoginButton(true)
+                }}>{props.user}</Button>}
                 <Modal
                     open={loginButton}
                     onClose={() => setLoginButton(false)}
@@ -51,12 +50,13 @@ function Header() {
                             <Typography variant='h5'>Register</Typography>
                             <form onSubmit={(e) => {
                                 e.preventDefault()
-                                console.log(registerDetails)
                                 axios.post('http://localhost:5000/registeruser', registerDetails)
                                     .then((res) => {
                                         if(res.data === 'registered') {
                                             localStorage.setItem('user', registerDetails.email)
+                                            props.setUser(registerDetails.email)
                                             setRegisterDetails({ name: '', email: '', password: '', password1: '' })
+                                            setLoginButton(false)
                                         }
                                     })
                                     .catch((err) => console.log(err))
@@ -78,6 +78,9 @@ function Header() {
                                     .then((res) => {
                                         if(res.data === 'right') {
                                             localStorage.setItem('user', loginDetails.email)
+                                            props.setUser(loginDetails.email)
+                                            setLoginDetails({ email: '', password: '' })
+                                            setLoginButton(false)
                                         }
                                     })
                                     .catch((err) => console.log(err))

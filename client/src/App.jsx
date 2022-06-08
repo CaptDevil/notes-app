@@ -3,10 +3,16 @@ import Header from './Components/Header';
 import MainSection from './Components/MainSection';
 
 function App() {
+    const [user, setUser] = React.useState('');
+
+    React.useEffect(() => {
+        setUser(localStorage.getItem('user'))
+    }, [localStorage.getItem('user')])
+
     return (
         <div>
-            <Header />
-            <MainSection />
+            <Header user={user} setUser={setUser} />
+            <MainSection user={user} />
         </div>
     );
 }

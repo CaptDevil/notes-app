@@ -15,11 +15,17 @@ import axios from 'axios';
 
 function NotesList(props) {
     const [notes, setNotes] = React.useState([]);
+    // const [refresh, setRefresh] = React.useState(false);
     
     React.useEffect(() => {
-        axios.get('http://localhost:5000/allnotes')
-            .then((res) => setNotes(res.data))
-    })
+        if(props.refresh === true) {
+            axios.post('http://localhost:5000/allnotes', {user: props.user})
+                .then((res) => {
+                    setNotes(res.data)
+                    props.setRefresh(false)
+                })
+        }
+    }, [props.user, props.refresh])
 
     return (
         <div style={{ width: '30%', margin: '0px 5px' }}>
@@ -27,7 +33,13 @@ function NotesList(props) {
                 <div style={{ height: '25%' }}>
                     <Typography variant='h6' style={{ padding: '2px 15px' }}>Notes List</Typography>
                     <Container>
-                        <Button sx={{color: '#618833'}} fullWidth size='small' startIcon={<AddIcon />}> New Note</Button>
+                        <Button sx={{color: '#618833'}} fullWidth size='small' startIcon={<AddIcon />} onClick={() => {
+                            axios.post('http://localhost:5000/newnote', {user: props.user})
+                                .then((res) => {
+                                    props.getSelected(res.data)
+                                    props.setRefresh(true)
+                                })
+                        }}> New Note</Button>
                     </Container>
                 </div>
                 <Paper elevation={0} sx={{ height: '75%', overflowY: 'auto' }}>
@@ -35,7 +47,7 @@ function NotesList(props) {
                         {notes.map((note, index) => {
                             return (
                                 <ListItem disablePadding divider key={index}>
-                                    <ListItemButton onClick={() => props.getSelected(index+1)}>
+                                    <ListItemButton onClick={() => props.getSelected(note._id)}>
                                         <ListItemText><Typography variant='body1'>{note.heading}</Typography></ListItemText>
                                         <ListItemText><Typography variant='caption'>{note.body}</Typography></ListItemText>
                                     </ListItemButton>
