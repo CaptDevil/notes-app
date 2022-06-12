@@ -12,7 +12,7 @@ function EditNotes(props) {
     React.useEffect(() => {
         if(note.body !== '' || note.heading !== '') {
             let interval = setTimeout(() => {
-                console.log(note)
+                // console.log(note)
                 axios.post(`http://localhost:5000/updatenote/`, note)
                     .then(() => props.setRefresh(true))
             }, 5000)

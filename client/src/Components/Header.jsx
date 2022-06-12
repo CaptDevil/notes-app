@@ -44,7 +44,7 @@ function Header(props) {
                     onClose={() => setLoginButton(false)}
                     aria-labelledby="parent-modal-title"
                     aria-describedby="parent-modal-description"
-                    >
+                >
                     <Box sx={{ ...style, width: '50%', display: 'flex', justifyContent: 'space-evenly' }}>
                         <Paper elevation={0} sx={{ float: 'left', width: '45%', padding: '2px 5px' }}>
                             <Typography variant='h5'>Register</Typography>
@@ -73,7 +73,7 @@ function Header(props) {
                             <Typography variant='h5'>Login</Typography>
                             <form onSubmit={(e) => {
                                 e.preventDefault()
-                                console.log(loginDetails)
+                                // console.log(loginDetails)
                                 axios.post('http://localhost:5000/loginuser', loginDetails)
                                     .then((res) => {
                                         if(res.data === 'right') {
