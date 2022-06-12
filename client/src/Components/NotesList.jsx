@@ -11,10 +11,24 @@ import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import AddIcon from '@mui/icons-material/Add';
 import axios from 'axios';
-// import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteIcon from '@mui/icons-material/Delete';
+import Modal from '@mui/material/Modal';
+
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    boxShadow: 24,
+    p: 4,
+};
 
 function NotesList(props) {
     const [notes, setNotes] = React.useState([]);
+    const [confirmDelete, setConfirmDelete] = React.useState(false);
+    const [deleteID, setDeleteID] = React.useState('');
     // const [refresh, setRefresh] = React.useState(false);
     
     React.useEffect(() => {
@@ -46,11 +60,15 @@ function NotesList(props) {
                     <List>
                         {notes.map((note, index) => {
                             return (
-                                <ListItem disablePadding divider key={index}>
-                                    <ListItemButton onClick={() => props.getSelected(note._id)}>
-                                        <ListItemText><Typography variant='body1'>{note.heading}</Typography></ListItemText>
-                                        <ListItemText><Typography variant='caption'>{note.body}</Typography></ListItemText>
-                                    </ListItemButton>
+                                <ListItem disablePadding divider key={index} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                        <ListItemButton style={{ display: 'block', paddingTop: '2px', width: '90%' }} onClick={() => props.getSelected(note._id)}>
+                                            <ListItemText><Typography variant='body1'>{note.heading}</Typography></ListItemText>
+                                            <ListItemText><Typography variant='caption'>{(note.body !== '') ? note.body.substring(0,20)+'...' : ''}</Typography></ListItemText>
+                                        </ListItemButton>
+                                        <Button size='small' endIcon={<DeleteIcon />} style={{ color: 'grey' }} onClick={() => {
+                                            setConfirmDelete(true)
+                                            setDeleteID(note._id)
+                                        }}/>
                                 </ListItem>
                             )
                         })}
@@ -58,6 +76,36 @@ function NotesList(props) {
                 </Paper>
             </Box>
             <AdvButtons />
+            <Modal
+                open={confirmDelete}
+                onClose={() => {
+                    setConfirmDelete(false)
+                    setDeleteID('')
+                }}
+            >
+                <Box sx={{ ...style, width: '25%' }}>
+                    <Typography variant='h5'>Confirm Delete?</Typography>
+                    <div style={{ float: 'right', marginTop: '15px' }}>
+                        <Button size='small' variant='outlined' onClick={() => {
+                            setConfirmDelete(false)
+                            setDeleteID('')
+                        }}>Cancel</Button>
+                        <Button color='error' size='small' sx={{ marginLeft: '5px' }} variant='contained' onClick={() => {
+                            if(deleteID !== '') {
+                                axios.post(`http://localhost:5000/delete/${deleteID}`,{ user: props.user })
+                                    .then((res) => {
+                                        if(res.data === 'done') {
+                                            props.setRefresh(true)
+                                            props.getSelected('')
+                                            setConfirmDelete(false)
+                                            setDeleteID('')
+                                        }
+                                    })
+                            }
+                        }}>Delete</Button>
+                    </div>
+                </Box>
+            </Modal>
         </div>
     );
 }

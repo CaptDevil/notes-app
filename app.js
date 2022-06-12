@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const { count } = require('./model/note');
 
 const app = express()
 
@@ -103,6 +104,16 @@ app.post('/loginuser', (req,res) => {
         }
         else
             res.send('wrong')
+    })
+})
+
+app.post('/delete/:id', (req,res) => {
+    const { user } = req.body;
+    const _id = req.params.id;
+    Note.deleteOne({ user, _id }, (err) => {
+        if(err)
+            throw err
+        res.send('done')
     })
 })
 

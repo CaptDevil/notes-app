@@ -10,7 +10,7 @@ function MainSection(props) {
     return (
         <Container maxWidth='md'>
             <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
-                <NotesList getSelected={(selected) => setSelected(selected)} user={props.user} refresh={refresh} setRefresh={setRefresh} />
+                <NotesList selected={selected} getSelected={(selected) => setSelected(selected)} user={props.user} refresh={refresh} setRefresh={setRefresh} />
                 <EditNotes selectedNote={selected} user={props.user} refresh={refresh} setRefresh={setRefresh} />
             </div>
         </Container>
