@@ -12,7 +12,7 @@ function MainSection(props) {
     }, [props.user])
 
     React.useEffect(() => {
-        let timer = setTimeout(() => setRefresh(false), 500)
+        let timer = setTimeout(() => setRefresh(false), 3000)
         return () => clearTimeout(timer)
     }, [refresh])
 
