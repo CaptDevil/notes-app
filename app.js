@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
-const { count } = require('./model/note');
+const bcrypt = require('bcryptjs');
 
 const app = express()
 
@@ -54,7 +54,7 @@ app.post('/updatenote',(req,res) => {
     Note.updateOne({_id}, { heading, body }, (err,doc) => {
         if(err)
             throw err;
-        console.log(doc)
+        // console.log(doc)
         res.send('updated')
     })
 })
@@ -71,23 +71,27 @@ app.post('/newnote',(req,res) => {
 app.post('/registeruser', (req,res) => {
     let { name, email, password } = req.body;
     User.find({ email }, (err,docs) => {
-        if(docs.length === 0) {
-            let user = new User({ name, email, password })
-            user.save((err,doc) => {
-                if(err)
-                    throw err
-                console.log(doc)
-                res.send('registered');
+        bcrypt.genSalt(10).then((salt) => {
+            bcrypt.hash(password, salt).then((hashedPassword) => {
+                if(docs.length === 0) {
+                    let user = new User({ name, email, password: hashedPassword })
+                    user.save((err,doc) => {
+                        if(err)
+                            throw err
+                        // console.log(doc)
+                        res.send('registered');
+                    })
+                }
+                else {
+                    User.updateOne({email},{password: hashedPassword},(err,doc) => {
+                        if(err)
+                            throw err
+                        // console.log(doc)
+                        res.send('registered');
+                    })
+                }
             })
-        }
-        else {
-            User.updateOne({email},{password},(err,doc) => {
-                if(err)
-                    throw err
-                console.log(doc)
-                res.send('registered');
-            })
-        }
+        })
     })
 })
 
@@ -97,10 +101,13 @@ app.post('/loginuser', (req,res) => {
         if(err)
             throw err
         if(doc.length !== 0) {
-            if (password === doc[0].password)
-                res.send('right');
-            else 
-                res.send('wrong')
+            bcrypt.compare(password,doc[0].password)
+                .then((result) => {
+                    if(result === true)
+                        res.send('right')
+                    else
+                        res.send('wrong')
+                })
         }
         else
             res.send('wrong')

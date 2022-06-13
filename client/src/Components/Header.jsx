@@ -8,6 +8,7 @@ import TextField from '@mui/material/TextField';
 import Paper from '@mui/material/Paper';
 import Divider from '@mui/material/Divider';
 import axios from 'axios';
+import bcrypt from 'bcryptjs';
 
 const style = {
     position: 'absolute',
@@ -50,16 +51,18 @@ function Header(props) {
                             <Typography variant='h5'>Register</Typography>
                             <form onSubmit={(e) => {
                                 e.preventDefault()
-                                axios.post('http://localhost:5000/registeruser', registerDetails)
-                                    .then((res) => {
-                                        if(res.data === 'registered') {
-                                            localStorage.setItem('user', registerDetails.email)
-                                            props.setUser(registerDetails.email)
-                                            setRegisterDetails({ name: '', email: '', password: '', password1: '' })
-                                            setLoginButton(false)
-                                        }
-                                    })
-                                    .catch((err) => console.log(err))
+                                if(registerDetails.password === registerDetails.password1) {
+                                    axios.post('http://localhost:5000/registeruser', registerDetails)
+                                        .then((res) => {
+                                            if(res.data === 'registered') {
+                                                localStorage.setItem('user', registerDetails.email)
+                                                props.setUser(registerDetails.email)
+                                                setRegisterDetails({ name: '', email: '', password: '', password1: '' })
+                                                setLoginButton(false)
+                                            }
+                                        })
+                                        .catch((err) => console.log(err))
+                                }
                             }}>
                                 <TextField fullWidth sx={{ marginTop: '15px' }} variant='standard' color='info' type='text' size='small' label='Name' value={registerDetails.name} placeholder='Adam Reed' onChange={(e) => setRegisterDetails({...registerDetails, name: e.target.value})} />
                                 <TextField fullWidth sx={{ marginTop: '15px' }} variant='standard' color='info' type='email' size='small' label='Email' value={registerDetails.email} placeholder='adam@email.com' onChange={(e) => setRegisterDetails({...registerDetails, email: e.target.value})} />
@@ -74,16 +77,18 @@ function Header(props) {
                             <form onSubmit={(e) => {
                                 e.preventDefault()
                                 // console.log(loginDetails)
-                                axios.post('http://localhost:5000/loginuser', loginDetails)
-                                    .then((res) => {
-                                        if(res.data === 'right') {
-                                            localStorage.setItem('user', loginDetails.email)
-                                            props.setUser(loginDetails.email)
-                                            setLoginDetails({ email: '', password: '' })
-                                            setLoginButton(false)
-                                        }
-                                    })
-                                    .catch((err) => console.log(err))
+                                if(loginDetails.email !== '' && loginDetails.password !== '') {
+                                    axios.post('http://localhost:5000/loginuser', loginDetails)
+                                        .then((res) => {
+                                            if(res.data === 'right') {
+                                                localStorage.setItem('user', loginDetails.email)
+                                                props.setUser(loginDetails.email)
+                                                setLoginDetails({ email: '', password: '' })
+                                                setLoginButton(false)
+                                            }
+                                        })
+                                        .catch((err) => console.log(err))
+                                }
                             }}>
                                 <TextField fullWidth sx={{ marginTop: '25px' }} variant='outlined' type='email' color='success' focused size='small' label='Email' value={loginDetails.email} placeholder='adam@email.com' onChange={(e) => setLoginDetails({...loginDetails, email: e.target.value})} />
                                 <TextField fullWidth sx={{ marginTop: '25px' }} variant='outlined' type='password' color='success' focused size='small' label='Password' value={loginDetails.password} onChange={(e) => setLoginDetails({...loginDetails, password: e.target.value})} />
