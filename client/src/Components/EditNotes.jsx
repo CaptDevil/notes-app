@@ -15,7 +15,7 @@ function EditNotes(props) {
                 // console.log(note)
                 axios.post(`/updatenote/`, note)
                     .then(() => props.setRefresh(true))
-            }, 5000)
+            }, 3000)
             return () => {
                 clearTimeout(interval)
             }
