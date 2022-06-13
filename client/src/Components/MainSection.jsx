@@ -7,6 +7,15 @@ function MainSection(props) {
     const [selected, setSelected] = React.useState('')
     const [refresh, setRefresh] = React.useState(true)
 
+    React.useEffect(() => {
+        setRefresh(true)
+    }, [props.user])
+
+    React.useEffect(() => {
+        let timer = setTimeout(() => setRefresh(false), 500)
+        return () => clearTimeout(timer)
+    }, [refresh])
+
     return (
         <Container maxWidth='md'>
             <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>

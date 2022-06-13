@@ -32,7 +32,7 @@ function NotesList(props) {
     // const [refresh, setRefresh] = React.useState(false);
     
     React.useEffect(() => {
-        if(props.refresh === true) {
+        if(props.refresh === true && props.user!==null) {
             axios.post('/allnotes', {user: props.user})
                 .then((res) => {
                     setNotes(res.data)

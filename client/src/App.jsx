@@ -7,7 +7,7 @@ function App() {
 
     React.useEffect(() => {
         setUser(localStorage.getItem('user'))
-    }, [localStorage.getItem('user')])
+    }, [])
 
     return (
         <div>
