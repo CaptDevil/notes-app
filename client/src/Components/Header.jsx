@@ -90,7 +90,7 @@ function Header(props) {
                                 }
                             }}>
                                 <TextField fullWidth sx={{ marginTop: '25px' }} variant='outlined' type='email' color='success' focused size='small' label='Email' value={loginDetails.email} placeholder='adam@email.com' onChange={(e) => setLoginDetails({...loginDetails, email: e.target.value})} />
-                                <TextField fullWidth sx={{ marginTop: '25px' }} variant='outlined' type='password' color='success' focused size='small' label='Password' value={loginDetails.password} onChange={(e) => setLoginDetails({...loginDetails, password: e.target.value})} />
+                                <TextField fullWidth sx={{ marginTop: '25px' }} variant='outlined' type='password' color='success' focused size='small' label='Password' value={loginDetails.password} onChange={(e) => setLoginDetails({...loginDetails, password: e.target.value})} placeholder="Shhh... It's secret..." />
                                 <Button type='submit' sx={{ margin: '20px 0', float: 'right' }} size='small' variant='contained' color='success'>Login</Button>
                             </form>
                         </Paper>
