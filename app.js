@@ -34,7 +34,7 @@ const User = mongoose.model('User')
 ]*/
 
 app.post('/allnotes',(req,res) => {
-    Note.find({user: req.body.user}).sort({_id: -1}).exec((err,docs) => {
+    Note.find({user: req.body.user, archive: false, trash: false}).sort({_id: -1}).exec((err,docs) => {
         if(err)
             throw err;
         res.send(docs)
@@ -117,7 +117,7 @@ app.post('/loginuser', (req,res) => {
 app.post('/delete/:id', (req,res) => {
     const { user } = req.body;
     const _id = req.params.id;
-    Note.deleteOne({ user, _id }, (err) => {
+    Note.updateOne({ user, _id }, {trash: true}, (err,doc) => {
         if(err)
             throw err
         res.send('done')

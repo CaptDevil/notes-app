@@ -9,6 +9,14 @@ let NoteSchema = new mongoose.Schema({
     },
     user: {
         type: String
+    },
+    archive: {
+        type: Boolean,
+        default: false
+    },
+    trash: {
+        type: Boolean,
+        default: false
     }
 })
 
