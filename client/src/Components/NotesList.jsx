@@ -33,7 +33,7 @@ function NotesList(props) {
     
     React.useEffect(() => {
         if(props.refresh === true) {
-            axios.post('http://localhost:5000/allnotes', {user: props.user})
+            axios.post('/allnotes', {user: props.user})
                 .then((res) => {
                     setNotes(res.data)
                     props.setRefresh(false)
@@ -48,7 +48,7 @@ function NotesList(props) {
                     <Typography variant='h6' style={{ padding: '2px 15px' }}>Notes List</Typography>
                     <Container>
                         <Button sx={{color: '#618833'}} fullWidth size='small' startIcon={<AddIcon />} onClick={() => {
-                            axios.post('http://localhost:5000/newnote', {user: props.user})
+                            axios.post('/newnote', {user: props.user})
                                 .then((res) => {
                                     props.getSelected(res.data)
                                     props.setRefresh(true)
@@ -92,7 +92,7 @@ function NotesList(props) {
                         }}>Cancel</Button>
                         <Button color='error' size='small' sx={{ marginLeft: '5px' }} variant='contained' onClick={() => {
                             if(deleteID !== '') {
-                                axios.post(`http://localhost:5000/delete/${deleteID}`,{ user: props.user })
+                                axios.post(`/delete/${deleteID}`,{ user: props.user })
                                     .then((res) => {
                                         if(res.data === 'done') {
                                             props.setRefresh(true)

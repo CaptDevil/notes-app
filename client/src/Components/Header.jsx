@@ -52,7 +52,7 @@ function Header(props) {
                             <form onSubmit={(e) => {
                                 e.preventDefault()
                                 if(registerDetails.password === registerDetails.password1) {
-                                    axios.post('http://localhost:5000/registeruser', registerDetails)
+                                    axios.post('/registeruser', registerDetails)
                                         .then((res) => {
                                             if(res.data === 'registered') {
                                                 localStorage.setItem('user', registerDetails.email)
@@ -78,7 +78,7 @@ function Header(props) {
                                 e.preventDefault()
                                 // console.log(loginDetails)
                                 if(loginDetails.email !== '' && loginDetails.password !== '') {
-                                    axios.post('http://localhost:5000/loginuser', loginDetails)
+                                    axios.post('/loginuser', loginDetails)
                                         .then((res) => {
                                             if(res.data === 'right') {
                                                 localStorage.setItem('user', loginDetails.email)
