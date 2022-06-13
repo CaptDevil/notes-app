@@ -8,7 +8,6 @@ import TextField from '@mui/material/TextField';
 import Paper from '@mui/material/Paper';
 import Divider from '@mui/material/Divider';
 import axios from 'axios';
-import bcrypt from 'bcryptjs';
 
 const style = {
     position: 'absolute',
