@@ -34,15 +34,26 @@ const User = mongoose.model('User')
 ]*/
 
 app.post('/allnotes',(req,res) => {
-    Note.find({user: req.body.user}).sort({_id: -1}).exec((err,docs) => {
+    const { user, archive, trash } = req.body;
+    Note.find({ user, archive, trash }).sort({_id: -1}).exec((err,docs) => {
         if(err)
             throw err;
         res.send(docs)
     })
 })
 
-app.get('/getnote/:id',(req,res) => {
-    Note.findOne({_id: req.params.id}, (err, docs) => {
+app.post('/alltrash', (req,res) => {
+    const { user } = req.body;
+    Note.find({ user, trash: true }).sort({_id: -1}).exec((err,docs) => {
+        if(err)
+            throw err;
+        res.send(docs)
+    })
+})
+
+app.post('/getnote/:id',(req,res) => {
+    const { user } = req.body;
+    Note.findOne({_id: req.params.id, user}, (err, docs) => {
         if(err)
             throw err;
         res.send(docs)
@@ -50,8 +61,8 @@ app.get('/getnote/:id',(req,res) => {
 })
 
 app.post('/updatenote',(req,res) => {
-    let { _id, heading, body } = req.body;
-    Note.updateOne({_id}, { heading, body }, (err,doc) => {
+    const { _id, heading, body, user } = req.body;
+    Note.updateOne({_id, user}, { heading, body }, (err,doc) => {
         if(err)
             throw err;
         // console.log(doc)
@@ -69,7 +80,7 @@ app.post('/newnote',(req,res) => {
 })
 
 app.post('/registeruser', (req,res) => {
-    let { name, email, password } = req.body;
+    const { name, email, password } = req.body;
     User.find({ email }, (err,docs) => {
         bcrypt.genSalt(10).then((salt) => {
             bcrypt.hash(password, salt).then((hashedPassword) => {
@@ -96,7 +107,7 @@ app.post('/registeruser', (req,res) => {
 })
 
 app.post('/loginuser', (req,res) => {
-    let {email, password} = req.body
+    const {email, password} = req.body
     User.find({email}, (err, doc) => {
         if(err)
             throw err
@@ -114,10 +125,50 @@ app.post('/loginuser', (req,res) => {
     })
 })
 
+app.post('/trash/:id', (req,res) => {
+    const { user } = req.body;
+    const _id = req.params.id;
+    Note.updateOne({ user, _id }, {trash: true}, (err) => {
+        if(err)
+            throw err
+        res.send('done')
+    })
+})
+
+app.post('/restore/:id', (req,res) => {
+    const { user } = req.body;
+    const _id = req.params.id;
+    Note.updateOne({ user, _id }, {trash: false}, (err) => {
+        if(err)
+            throw err
+        res.send('done')
+    })
+})
+
+app.post('/archive/:id', (req,res) => {
+    const { user } = req.body;
+    const _id = req.params.id;
+    Note.updateOne({ user, _id }, {archive: true}, (err) => {
+        if(err)
+            throw err
+        res.send('done')
+    })
+})
+
+app.post('/unarchive/:id', (req,res) => {
+    const { user } = req.body;
+    const _id = req.params.id;
+    Note.updateOne({ user, _id }, {archive: false}, (err) => {
+        if(err)
+            throw err
+        res.send('done')
+    })
+})
+
 app.post('/delete/:id', (req,res) => {
     const { user } = req.body;
     const _id = req.params.id;
-    Note.deleteOne({ user, _id }, (err) => {
+    Note.deleteOne({ _id, user }, (err, results) => {
         if(err)
             throw err
         res.send('done')
