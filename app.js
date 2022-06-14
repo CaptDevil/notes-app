@@ -62,7 +62,7 @@ app.post('/getnote/:id',(req,res) => {
 
 app.post('/updatenote',(req,res) => {
     const { _id, heading, body, user } = req.body;
-    Note.updateOne({_id, user}, { heading, body }, (err,doc) => {
+    Note.updateOne({_id, user}, { heading, body }, (err) => {
         if(err)
             throw err;
         // console.log(doc)
