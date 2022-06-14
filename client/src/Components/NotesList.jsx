@@ -8,32 +8,20 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import Button from '@mui/material/Button';
+import ButtonGroup from '@mui/material/ButtonGroup';
 import Container from '@mui/material/Container';
 import AddIcon from '@mui/icons-material/Add';
 import axios from 'axios';
 import DeleteIcon from '@mui/icons-material/Delete';
-import Modal from '@mui/material/Modal';
-
-const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 400,
-    bgcolor: 'background.paper',
-    boxShadow: 24,
-    p: 4,
-};
+import ArchiveIcon from '@mui/icons-material/Archive';
+import Divider from '@mui/material/Divider';
 
 function NotesList(props) {
     const [notes, setNotes] = React.useState([]);
-    const [confirmDelete, setConfirmDelete] = React.useState(false);
-    const [deleteID, setDeleteID] = React.useState('');
-    // const [refresh, setRefresh] = React.useState(false);
     
     React.useEffect(() => {
         if(props.refresh === true && props.user!==null) {
-            axios.post('/allnotes', {user: props.user})
+            axios.post('/allnotes', {user: props.user, archive: false, trash: false})
                 .then((res) => {
                     setNotes(res.data)
                     props.setRefresh(false)
@@ -56,56 +44,45 @@ function NotesList(props) {
                         }}> New Note</Button>
                     </Container>
                 </div>
+                <Divider />
                 <Paper elevation={0} sx={{ height: '75%', overflowY: 'auto' }}>
-                    <List>
+                    <List disablePadding>
                         {notes.map((note, index) => {
                             return (
-                                <ListItem disablePadding divider key={index} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                <ListItem disablePadding selected={(note._id === props.selected)} divider key={index} style={{ display: 'flex', justifyContent: 'space-between' }}>
                                         <ListItemButton style={{ display: 'block', paddingTop: '2px', width: '90%' }} onClick={() => props.getSelected(note._id)}>
                                             <ListItemText><Typography variant='body1'>{note.heading}</Typography></ListItemText>
                                             <ListItemText><Typography variant='caption'>{(note.body !== '') ? note.body.substring(0,20)+'...' : ''}</Typography></ListItemText>
                                         </ListItemButton>
-                                        <Button size='small' endIcon={<DeleteIcon />} style={{ color: 'grey' }} onClick={() => {
-                                            setConfirmDelete(true)
-                                            setDeleteID(note._id)
-                                        }}/>
+                                        <ButtonGroup orientation='vertical' disableElevation variant='text' size='small'>
+                                            <Button style={{ color: 'grey', border: 'white' }} onClick={() => {
+                                                axios.post(`/archive/${note._id}`, { user: props.user })
+                                                    .then((res) => {
+                                                        if(res.data === 'done') {
+                                                            if(props.selected === note._id)
+                                                                props.getSelected('')
+                                                            props.setRefresh(true)
+                                                        }
+                                                    })
+                                            }}><ArchiveIcon fontSize='small' /></Button>
+                                            <Button style={{ color: 'grey' }} onClick={() => {
+                                                axios.post(`/trash/${note._id}`,{ user: props.user })
+                                                    .then((res) => {
+                                                        if(res.data === 'done') {
+                                                            if(props.selected === note._id)
+                                                                props.getSelected('')
+                                                            props.setRefresh(true)
+                                                        }
+                                                    })
+                                            }}><DeleteIcon fontSize='small' /></Button>
+                                        </ButtonGroup>
                                 </ListItem>
                             )
                         })}
                     </List>
                 </Paper>
             </Box>
-            <AdvButtons />
-            <Modal
-                open={confirmDelete}
-                onClose={() => {
-                    setConfirmDelete(false)
-                    setDeleteID('')
-                }}
-            >
-                <Box sx={{ ...style, width: '25%' }}>
-                    <Typography variant='h5'>Confirm Delete?</Typography>
-                    <div style={{ float: 'right', marginTop: '15px' }}>
-                        <Button size='small' variant='outlined' onClick={() => {
-                            setConfirmDelete(false)
-                            setDeleteID('')
-                        }}>Cancel</Button>
-                        <Button color='error' size='small' sx={{ marginLeft: '5px' }} variant='contained' onClick={() => {
-                            if(deleteID !== '') {
-                                axios.post(`/delete/${deleteID}`,{ user: props.user })
-                                    .then((res) => {
-                                        if(res.data === 'done') {
-                                            props.setRefresh(true)
-                                            props.getSelected('')
-                                            setConfirmDelete(false)
-                                            setDeleteID('')
-                                        }
-                                    })
-                            }
-                        }}>Delete</Button>
-                    </div>
-                </Box>
-            </Modal>
+            <AdvButtons user={props.user} refresh={props.refresh} setRefresh={props.setRefresh} />
         </div>
     );
 }
