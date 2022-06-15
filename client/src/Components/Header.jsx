@@ -26,7 +26,7 @@ function Header(props) {
     const [loginDetails, setLoginDetails] = React.useState({ email: '', password: '' });
 
     React.useEffect(() => {
-        if(props.user === null)
+        if(props.user === '')
             setLoginButton(true)
     }, [props.user])
 
