@@ -49,15 +49,15 @@ function ArchiveWindow(props) {
     }, [selectedNote])
 
     return (
-        <Box sx={{ ...style, width: '70%' }}>
+        <Box sx={{ ...style, width: '70%', backgroundColor: (props.darkMode) ? '#191A1A' : 'white' }}>
             <Container>
                 <div style={{ display: 'flex', justifyContent: 'space-between', margin: '5px auto' }}>
-                    <Paper elevation={0} sx={{ float: 'left', borderRadius: '5px', boxSizing: 'border-box', width: '30%', border: '2px solid black', height: 340 }}>
+                    <Paper elevation={0} sx={{ float: 'left', backgroundColor: (props.darkMode) ? '#191A1A': '', color: (props.darkMode) ? 'white' : '', borderRadius: '5px', boxSizing: 'border-box', width: '30%', border: '2px solid black', height: 340 }}>
                         <div style={{ height: '15%' }}>
-                            <Typography variant='h6' style={{ padding: '2px 15px' }}>Archives List</Typography>
+                            <Typography variant='h6' style={{ padding: '5px 15px' }}>Archives List</Typography>
                         </div>
                         <Divider />
-                        <Paper elevation={0} sx={{ height: '85%', overflowY: 'auto' }}>
+                        <Paper elevation={0} sx={{ height: '85%', overflowY: 'auto', backgroundColor: (props.darkMode)?'#575A5A':'', color: (props.darkMode)?'white':'' }}>
                             <List disablePadding>
                                 {notes.map((note, index) => {
                                     return (
@@ -67,7 +67,7 @@ function ArchiveWindow(props) {
                                                     <ListItemText><Typography variant='caption'>{(note.body !== '') ? note.body.substring(0,20)+'...' : ''}</Typography></ListItemText>
                                                 </ListItemButton>
                                                 <ButtonGroup orientation='vertical' disableElevation variant='text' size='small'>
-                                                    <Button style={{ color: 'grey', border: 'white' }} onClick={() => {
+                                                    <Button style={{ color: '#3E7D1E', border: 'white' }} onClick={() => {
                                                         axios.post(`/unarchive/${note._id}`, { user: props.user })
                                                             .then((res) => {
                                                                 if(res.data === 'done') {
@@ -76,8 +76,8 @@ function ArchiveWindow(props) {
                                                                     props.setRefresh(true)
                                                                 }
                                                             })
-                                                    }}><UnarchiveIcon fontSize='small' /></Button>
-                                                    <Button style={{ color: 'grey' }} onClick={() => {
+                                                    }}><UnarchiveIcon fontSize='small' sx={{ color: (props.darkMode)?'#D8FFD8':'' }} /></Button>
+                                                    <Button style={{ color: '#FF5B5B' }} onClick={() => {
                                                         axios.post(`/trash/${note._id}`,{ user: props.user })
                                                             .then((res) => {
                                                                 if(res.data === 'done') {
@@ -86,7 +86,7 @@ function ArchiveWindow(props) {
                                                                     props.setRefresh(true)
                                                                 }
                                                             })
-                                                    }}><DeleteIcon fontSize='small' /></Button>
+                                                    }}><DeleteIcon fontSize='small' sx={{ color: (props.darkMode)?'#FFA0A0':'' }} /></Button>
                                                 </ButtonGroup>
                                         </ListItem>
                                     )
@@ -95,20 +95,20 @@ function ArchiveWindow(props) {
                         </Paper>
                     </Paper>
                     { (Object.keys(selectedNote).length !== 0) ?
-                    <Paper elevation={0} sx={{ float: 'right', borderRadius: '5px', boxSizing: 'border-box', backgroundColor: '#fff391', width: '65%', border: '2px solid black', height: 340, padding: '1.5px 0px' }}>
+                    <Paper elevation={0} sx={{ float: 'right', borderRadius: '5px', boxSizing: 'border-box', backgroundColor: (props.darkMode)?'#4C4C4C':'#fff391', width: '65%', border: '2px solid black', height: 340, padding: '1.5px 0px' }}>
                         <div style={{ height: '100%', overflowY: 'auto' }}>
                             <Container maxWidth='lg'>
-                                <Input disableUnderline multiline fullWidth sx={{ fontSize: '34px', marginTop: '15px', fontWeight: 700 }} placeholder='Untitled Note Heading' value={selectedNote.heading} onChange={(e) => {
+                                <Input disableUnderline multiline fullWidth sx={{ fontSize: '34px', marginTop: '15px', fontWeight: 700, color: (props.darkMode) ? 'white' : '' }} placeholder='Untitled Note Heading' value={selectedNote.heading} onChange={(e) => {
                                     setSelectedNote({...selectedNote, heading: e.target.value})
                                 }}/>
                                 <Divider />
-                                <Input disableUnderline multiline fullWidth sx={{ fontSize: '18px', margin: '10px 0px 5px 0px' }} placeholder='Start writing your note here...' value={selectedNote.body} onChange={(e) => {
+                                <Input disableUnderline multiline fullWidth sx={{ fontSize: '18px', margin: '10px 0px 5px 0px', color: (props.darkMode) ? 'white' : '' }} placeholder='Start writing your note here...' value={selectedNote.body} onChange={(e) => {
                                     setSelectedNote({...selectedNote, body: e.target.value})
                                 }}/>
                             </Container>
                         </div>
                     </Paper> :
-                    <Paper elevation={0} sx={{ float: 'right', borderRadius: '5px', boxSizing: 'border-box', backgroundColor: '#ababab', width: '65%', border: '2px solid black', height: 340, padding: '15px 0px' }}>
+                    <Paper elevation={0} sx={{ float: 'right', borderRadius: '5px', boxSizing: 'border-box', backgroundColor: '#ababab', color: (props.darkMode)?'#494A49':'#424242', width: '65%', border: '2px solid black', height: 340, padding: '15px 0px' }}>
                         <div style={{ height: '100%', overflowY: 'auto' }}>
                             <Container maxWidth='lg'>
                                 <Typography variant='subtitle1'>Select a note to view and edit.</Typography>

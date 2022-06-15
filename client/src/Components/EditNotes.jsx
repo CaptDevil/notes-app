@@ -32,20 +32,20 @@ function EditNotes(props) {
     },[props.selectedNote])
 
     return ( props.selectedNote !== '' ?
-        <Box sx={{ border: '2px solid black', boxSizing: 'border-box', backgroundColor: '#fff391', borderRadius: '5px', width: '70%', height: 500, margin: '0px 5px', padding: '1.5px 0px' }}>
+        <Box sx={{ border: '2px solid black', boxSizing: 'border-box', backgroundColor: (props.darkMode)?'#4C4C4C':'#fff391', borderRadius: '5px', width: '70%', height: 500, margin: '0px 5px', padding: '1.5px 0px' }}>
             <div style={{ height: '100%', overflowY: 'auto' }}>
                 <Container maxWidth='lg'>
-                    <Input disableUnderline multiline fullWidth sx={{ fontSize: '34px', marginTop: '20px', fontWeight: 700 }} placeholder='Untitled Note Heading' value={note.heading} onChange={(e) => {
+                    <Input disableUnderline multiline fullWidth sx={{ fontSize: '34px', marginTop: '20px', fontWeight: 700, color: (props.darkMode) ? 'white' : '' }} placeholder='Untitled Note Heading' value={note.heading} onChange={(e) => {
                         setNote({...note, heading: e.target.value})
                     }}/>
-                    <Divider />
-                    <Input disableUnderline multiline fullWidth sx={{ fontSize: '18px', margin: '15px 0px 10px 0px' }} placeholder='Start writing your note here...' value={note.body} onChange={(e) => {
+                    <Divider sx={{ backgroundColor: (props.darkMode)?'white':'' }} />
+                    <Input disableUnderline multiline fullWidth sx={{ fontSize: '18px', margin: '15px 0px 10px 0px', color: (props.darkMode) ? 'white' : '' }} placeholder='Start writing your note here...' value={note.body} onChange={(e) => {
                         setNote({...note, body: e.target.value})
                     }}/>
                 </Container>
             </div>
         </Box> :
-        <Box sx={{ border: '2px solid black', boxSizing: 'border-box', backgroundColor: '#ababab', borderRadius: '5px', width: '70%', height: 500, margin: '0px 5px', padding: '15px 0px' }}>
+        <Box sx={{ border: '2px solid black', boxSizing: 'border-box', backgroundColor: '#ababab', color: (props.darkMode)?'#494A49':'#424242', borderRadius: '5px', width: '70%', height: 500, margin: '0px 5px', padding: '15px 0px' }}>
             <div style={{ height: '100%', overflowY: 'auto' }}>
                 <Container maxWidth='lg'>
                     <Typography variant='subtitle1'>Create new note or click on existing to start writing.</Typography>

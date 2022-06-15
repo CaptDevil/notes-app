@@ -35,7 +35,7 @@ function NotesList(props) {
                 <div style={{ height: '25%' }}>
                     <Typography variant='h6' style={{ padding: '2px 15px' }}>Notes List</Typography>
                     <Container>
-                        <Button sx={{color: '#618833'}} fullWidth size='small' startIcon={<AddIcon />} onClick={() => {
+                        <Button sx={{color: (props.darkMode)?'#00AF00':'#3E7D1E' }} fullWidth size='small' startIcon={<AddIcon />} onClick={() => {
                             axios.post('/newnote', {user: props.user})
                                 .then((res) => {
                                     props.getSelected(res.data)
@@ -45,7 +45,7 @@ function NotesList(props) {
                     </Container>
                 </div>
                 <Divider />
-                <Paper elevation={0} sx={{ height: '75%', overflowY: 'auto' }}>
+                <Paper elevation={0} sx={{ height: '75%', overflowY: 'auto', backgroundColor: (props.darkMode)?'#575A5A':'', color: (props.darkMode)?'white':'' }}>
                     <List disablePadding>
                         {notes.map((note, index) => {
                             return (
@@ -55,7 +55,7 @@ function NotesList(props) {
                                             <ListItemText><Typography variant='caption'>{(note.body !== '') ? note.body.substring(0,20)+'...' : ''}</Typography></ListItemText>
                                         </ListItemButton>
                                         <ButtonGroup orientation='vertical' disableElevation variant='text' size='small'>
-                                            <Button style={{ color: 'grey', border: 'white' }} onClick={() => {
+                                            <Button style={{ color: '#3E7D1E', border: 'none' }} onClick={() => {
                                                 axios.post(`/archive/${note._id}`, { user: props.user })
                                                     .then((res) => {
                                                         if(res.data === 'done') {
@@ -64,8 +64,8 @@ function NotesList(props) {
                                                             props.setRefresh(true)
                                                         }
                                                     })
-                                            }}><ArchiveIcon fontSize='small' /></Button>
-                                            <Button style={{ color: 'grey' }} onClick={() => {
+                                            }}><ArchiveIcon fontSize='small' sx={{ color: (props.darkMode)?'#D8FFD8':'' }} /></Button>
+                                            <Button style={{ color: '#FF6E6E' }} onClick={() => {
                                                 axios.post(`/trash/${note._id}`,{ user: props.user })
                                                     .then((res) => {
                                                         if(res.data === 'done') {
@@ -74,7 +74,7 @@ function NotesList(props) {
                                                             props.setRefresh(true)
                                                         }
                                                     })
-                                            }}><DeleteIcon fontSize='small' /></Button>
+                                            }}><DeleteIcon fontSize='small' sx={{ color: (props.darkMode)?'#FFA0A0':'' }} /></Button>
                                         </ButtonGroup>
                                 </ListItem>
                             )
@@ -82,7 +82,7 @@ function NotesList(props) {
                     </List>
                 </Paper>
             </Box>
-            <AdvButtons user={props.user} refresh={props.refresh} setRefresh={props.setRefresh} />
+            <AdvButtons user={props.user} refresh={props.refresh} setRefresh={props.setRefresh} darkMode={props.darkMode} setDarkMode={props.setDarkMode} />
         </div>
     );
 }

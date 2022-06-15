@@ -9,11 +9,10 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Modal from '@mui/material/Modal';
-import Typography from '@mui/material/Typography';
-import Paper from '@mui/material/Paper';
-import Container from '@mui/material/Container';
 import ArchiveWindow from './ArchiveWindow';
 import TrashWindow from './TrashWindow';
+import LightModeIcon from '@mui/icons-material/LightMode';
+import Divider from '@mui/material/Divider';
 
 const style = {
     position: 'absolute',
@@ -33,24 +32,32 @@ function AdvButtons(props) {
     return (
         <div>
             <Box sx={{ boxSizing: 'border-box', borderRadius: '5px', width: '100%', height: 184, padding: '2px 0px', overflowY: 'auto' }}>
-                <List disablePadding>
-                    <ListItem disablePadding divider>
+                <List disablePadding >
+                    <ListItem disablePadding >
                         <ListItemButton onClick={() => setOpenArchives(true)}>
-                            <ListItemIcon><ArchiveIcon /></ListItemIcon>
+                            <ListItemIcon><ArchiveIcon sx={{ color: (props.darkMode) ? 'white' : '' }} /></ListItemIcon>
                             <ListItemText primary='Archive'/>
                         </ListItemButton>
                     </ListItem>
-                    <ListItem disablePadding divider>
+                    <Divider sx={{ backgroundColor: (props.darkMode) ? 'white' : '' }} />
+                    <ListItem disablePadding >
                         <ListItemButton onClick={() => setOpenTrash(true)}>
-                            <ListItemIcon><DeleteIcon /></ListItemIcon>
+                            <ListItemIcon><DeleteIcon sx={{ color: (props.darkMode) ? 'white' : '' }} /></ListItemIcon>
                             <ListItemText primary='Trash'/>
                         </ListItemButton>
                     </ListItem>
-                    <ListItem disablePadding>
-                        <ListItemButton onClick={() => console.log('Dark Mode')}>
-                            <ListItemIcon><ModeNightIcon /></ListItemIcon>
-                            <ListItemText primary='Dark Mode'/>
-                        </ListItemButton>
+                    <Divider sx={{ backgroundColor: (props.darkMode) ? 'white' : '' }} />
+                    <ListItem disablePadding >
+                        {(props.darkMode) ? 
+                            <ListItemButton onClick={() => props.setDarkMode(false)}>
+                                <ListItemIcon><LightModeIcon sx={{ color:  'white' }} /></ListItemIcon>
+                                <ListItemText primary='Light Mode'/>
+                            </ListItemButton> :
+                            <ListItemButton onClick={() => props.setDarkMode(true)}>
+                                <ListItemIcon><ModeNightIcon /></ListItemIcon>
+                                <ListItemText primary='Dark Mode'/>
+                            </ListItemButton>
+                        }
                     </ListItem>
                 </List>
             </Box>
@@ -58,13 +65,13 @@ function AdvButtons(props) {
                 open={openArchives}
                 onClose={() => setOpenArchives(false)}
             >
-                <ArchiveWindow user={props.user} openArchives={openArchives} refresh={props.refresh} setRefresh={props.setRefresh} />
+                <ArchiveWindow user={props.user} openArchives={openArchives} refresh={props.refresh} setRefresh={props.setRefresh} darkMode={props.darkMode} />
             </Modal>
             <Modal
                 open={openTrash}
                 onClose={() => setOpenTrash(false)}
             >
-                <TrashWindow user={props.user} openTrash={openTrash} refresh={props.refresh} setRefresh={props.setRefresh} />
+                <TrashWindow user={props.user} openTrash={openTrash} refresh={props.refresh} setRefresh={props.setRefresh} darkMode={props.darkMode} />
             </Modal>
         </div>
     );

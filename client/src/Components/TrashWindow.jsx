@@ -39,16 +39,16 @@ function TrashWindow(props) {
     }, [props.refresh, props.openTrash])
 
     return (
-        <Box sx={{ ...style, width: '70%' }}>
+        <Box sx={{ ...style, width: '70%', backgroundColor: (props.darkMode) ? '#191A1A' : 'white' }}>
             <Container>
                 <div style={{ display: 'flex', justifyContent: 'space-between', margin: '5px auto' }}>
-                    <Paper elevation={0} sx={{ float: 'left', borderRadius: '5px', boxSizing: 'border-box', width: '30%', border: '2px solid black', height: 340 }}>
+                    <Paper elevation={0} sx={{ float: 'left', borderRadius: '5px', backgroundColor: (props.darkMode) ? '#191A1A': '', color: (props.darkMode) ? 'white' : '', boxSizing: 'border-box', width: '30%', border: '2px solid black', height: 340 }}>
                         <div style={{ height: '20%' }}>
-                            <Typography variant='h6' style={{ padding: '2px 15px' }}>Trash</Typography>
-                            <Typography variant='caption' style={{ padding: '2px 15px' }}>Editing not allowed</Typography>
+                            <Typography variant='h6' style={{ padding: '2.5px 15px' }}>Trash</Typography>
+                            <Typography variant='caption' style={{ padding: '0px 15px' }}>Editing not allowed</Typography>
                         </div>
                         <Divider />
-                        <Paper elevation={0} sx={{ height: '80%', overflowY: 'auto' }}>
+                        <Paper elevation={0} sx={{ height: '80%', overflowY: 'auto', backgroundColor: (props.darkMode)?'#575A5A':'', color: (props.darkMode)?'white':'' }}>
                             <List disablePadding>
                                 {notes.map((note, index) => {
                                     return (
@@ -58,7 +58,7 @@ function TrashWindow(props) {
                                                     <ListItemText><Typography variant='caption'>{(note.body !== '') ? note.body.substring(0,20)+'...' : ''}</Typography></ListItemText>
                                                 </ListItemButton>
                                                 <ButtonGroup orientation='vertical' disableElevation variant='text' size='small'>
-                                                    <Button size='small' style={{ color: 'grey', border: 'white' }} onClick={() => {
+                                                    <Button size='small' style={{ color: '#3E7D1E', border: 'white' }} onClick={() => {
                                                         axios.post(`/restore/${note._id}`, { user: props.user })
                                                             .then((res) => {
                                                                 if(res.data === 'done') {
@@ -67,11 +67,11 @@ function TrashWindow(props) {
                                                                     props.setRefresh(true)
                                                                 }
                                                             })
-                                                    }}><RestoreFromTrashIcon fontSize='small' /></Button>
-                                                    <Button size='small' style={{ color: 'grey', border: 'white' }} onClick={() => {
+                                                    }}><RestoreFromTrashIcon fontSize='small' sx={{ color: (props.darkMode)?'#D8FFD8':'' }} /></Button>
+                                                    <Button size='small' style={{ color: '#FF0101', border: 'white' }} onClick={() => {
                                                         setOpenConfirmDelete(true)
                                                         setDeleteID(note._id)
-                                                    }}><DeleteForeverIcon fontSize='small' /></Button>
+                                                    }}><DeleteForeverIcon fontSize='small' sx={{ color: (props.darkMode)?'#FF2626':'' }} /></Button>
                                                 </ButtonGroup>
                                         </ListItem>
                                     )
@@ -80,16 +80,16 @@ function TrashWindow(props) {
                         </Paper>
                     </Paper>
                     { (Object.keys(selectedNote).length !== 0) ?
-                    <Paper elevation={0} sx={{ float: 'right', borderRadius: '5px', boxSizing: 'border-box', backgroundColor: '#fff391', width: '65%', border: '2px solid black', height: 340, padding: '1.5px 0px' }}>
+                    <Paper elevation={0} sx={{ float: 'right', borderRadius: '5px', boxSizing: 'border-box', backgroundColor: (props.darkMode)?'#C9C9C9':'#fff391', width: '65%', border: '2px solid black', height: 340, padding: '1.5px 0px' }}>
                         <div style={{ height: '100%', overflowY: 'auto' }}>
                             <Container maxWidth='lg'>
-                                <Input disabled disableUnderline multiline fullWidth sx={{ fontSize: '34px', marginTop: '15px', fontWeight: 700 }} placeholder='Untitled Note Heading' value={selectedNote.heading} />
+                                <Input disabled disableUnderline multiline fullWidth sx={{ fontSize: '34px', marginTop: '15px', fontWeight: 700, color: (props.darkMode) ? 'white' : '' }} placeholder='Untitled Note Heading' value={selectedNote.heading} />
                                 <Divider />
-                                <Input disabled disableUnderline multiline fullWidth sx={{ fontSize: '18px', margin: '10px 0px 5px 0px' }} placeholder='Start writing your note here...' value={selectedNote.body} />
+                                <Input disabled disableUnderline multiline fullWidth sx={{ fontSize: '18px', margin: '10px 0px 5px 0px', color: (props.darkMode) ? 'white' : '' }} placeholder='Start writing your note here...' value={selectedNote.body} />
                             </Container>
                         </div>
                     </Paper> :
-                    <Paper elevation={0} sx={{ float: 'right', borderRadius: '5px', boxSizing: 'border-box', backgroundColor: '#ababab', width: '65%', border: '2px solid black', height: 340, padding: '15px 0px' }}>
+                    <Paper elevation={0} sx={{ float: 'right', borderRadius: '5px', boxSizing: 'border-box', backgroundColor: '#ababab', color: (props.darkMode)?'#494A49':'#424242', width: '65%', border: '2px solid black', height: 340, padding: '15px 0px' }}>
                         <div style={{ height: '100%', overflowY: 'auto' }}>
                             <Container maxWidth='lg'>
                                 <Typography variant='subtitle1'>Select a note to view.</Typography>
@@ -101,12 +101,15 @@ function TrashWindow(props) {
             </Container>
             <Modal
                 open={openConfirmDelete}
-                onClose={() => setOpenConfirmDelete(false)}
+                onClose={() => {
+                    setOpenConfirmDelete(false)
+                    setDeleteID('')
+                }}
             >
-                <Box sx={{ ...style, width: '25%' }}>
+                <Box sx={{ ...style, width: '25%', backgroundColor: (props.darkMode) ? '#191A1A' : 'white', color: (props.darkMode) ? 'white' : '' }}>
                     <Typography variant='h5'>Confirm Delete?</Typography>
                     <div style={{ float: 'right', marginTop: '15px' }}>
-                        <Button size='small' variant='outlined' onClick={() => {
+                        <Button size='small' variant={(props.darkMode)?'contained':'outlined'} onClick={() => {
                             setOpenConfirmDelete(false)
                             setDeleteID('')
                         }}>Cancel</Button>
