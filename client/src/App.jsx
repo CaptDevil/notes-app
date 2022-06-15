@@ -4,15 +4,20 @@ import MainSection from './Components/MainSection';
 
 function App() {
     const [user, setUser] = React.useState('');
+    const [darkMode, setDarkMode] = React.useState(false);
 
     React.useEffect(() => {
         setUser(localStorage.getItem('user'))
     }, [])
 
+    React.useEffect(() => {
+        console.log(darkMode)
+    }, [darkMode])
+
     return (
         <div>
-            <Header user={user} setUser={setUser} />
-            <MainSection user={user} />
+            <Header user={user} setUser={setUser} darkMode={darkMode} />
+            <MainSection user={user} darkMode={darkMode} setDarkMode={setDarkMode} />
         </div>
     );
 }

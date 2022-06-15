@@ -82,7 +82,7 @@ function NotesList(props) {
                     </List>
                 </Paper>
             </Box>
-            <AdvButtons user={props.user} refresh={props.refresh} setRefresh={props.setRefresh} />
+            <AdvButtons user={props.user} refresh={props.refresh} setRefresh={props.setRefresh} darkMode={props.darkMode} setDarkMode={props.setDarkMode} />
         </div>
     );
 }

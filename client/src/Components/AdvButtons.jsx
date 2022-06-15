@@ -9,9 +9,6 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Modal from '@mui/material/Modal';
-import Typography from '@mui/material/Typography';
-import Paper from '@mui/material/Paper';
-import Container from '@mui/material/Container';
 import ArchiveWindow from './ArchiveWindow';
 import TrashWindow from './TrashWindow';
 
@@ -47,7 +44,7 @@ function AdvButtons(props) {
                         </ListItemButton>
                     </ListItem>
                     <ListItem disablePadding>
-                        <ListItemButton onClick={() => console.log('Dark Mode')}>
+                        <ListItemButton onClick={() =>  (props.darkMode) ? props.setDarkMode(false) : props.setDarkMode(true)}>
                             <ListItemIcon><ModeNightIcon /></ListItemIcon>
                             <ListItemText primary='Dark Mode'/>
                         </ListItemButton>
