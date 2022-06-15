@@ -49,12 +49,12 @@ function AdvButtons(props) {
                     <Divider sx={{ backgroundColor: (props.darkMode) ? 'white' : '' }} />
                     <ListItem disablePadding >
                         {(props.darkMode) ? 
-                            <ListItemButton onClick={() =>  (props.darkMode) ? props.setDarkMode(false) : props.setDarkMode(true)}>
-                                <ListItemIcon><LightModeIcon sx={{ color: (props.darkMode) ? 'white' : '' }} /></ListItemIcon>
+                            <ListItemButton onClick={() => props.setDarkMode(false)}>
+                                <ListItemIcon><LightModeIcon sx={{ color:  'white' }} /></ListItemIcon>
                                 <ListItemText primary='Light Mode'/>
                             </ListItemButton> :
-                            <ListItemButton onClick={() =>  (props.darkMode) ? props.setDarkMode(false) : props.setDarkMode(true)}>
-                                <ListItemIcon><ModeNightIcon sx={{ color: (props.darkMode) ? 'white' : '' }} /></ListItemIcon>
+                            <ListItemButton onClick={() => props.setDarkMode(true)}>
+                                <ListItemIcon><ModeNightIcon /></ListItemIcon>
                                 <ListItemText primary='Dark Mode'/>
                             </ListItemButton>
                         }
@@ -65,13 +65,13 @@ function AdvButtons(props) {
                 open={openArchives}
                 onClose={() => setOpenArchives(false)}
             >
-                <ArchiveWindow user={props.user} openArchives={openArchives} refresh={props.refresh} setRefresh={props.setRefresh} />
+                <ArchiveWindow user={props.user} openArchives={openArchives} refresh={props.refresh} setRefresh={props.setRefresh} darkMode={props.darkMode} />
             </Modal>
             <Modal
                 open={openTrash}
                 onClose={() => setOpenTrash(false)}
             >
-                <TrashWindow user={props.user} openTrash={openTrash} refresh={props.refresh} setRefresh={props.setRefresh} />
+                <TrashWindow user={props.user} openTrash={openTrash} refresh={props.refresh} setRefresh={props.setRefresh} darkMode={props.darkMode} />
             </Modal>
         </div>
     );

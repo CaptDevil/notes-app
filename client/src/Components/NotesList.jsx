@@ -65,7 +65,7 @@ function NotesList(props) {
                                                         }
                                                     })
                                             }}><ArchiveIcon fontSize='small' sx={{ color: (props.darkMode)?'#D8FFD8':'' }} /></Button>
-                                            <Button style={{ color: '#3E7D1E' }} onClick={() => {
+                                            <Button style={{ color: '#FF6E6E' }} onClick={() => {
                                                 axios.post(`/trash/${note._id}`,{ user: props.user })
                                                     .then((res) => {
                                                         if(res.data === 'done') {
@@ -74,7 +74,7 @@ function NotesList(props) {
                                                             props.setRefresh(true)
                                                         }
                                                     })
-                                            }}><DeleteIcon fontSize='small' sx={{ color: (props.darkMode)?'#D8FFD8':'' }} /></Button>
+                                            }}><DeleteIcon fontSize='small' sx={{ color: (props.darkMode)?'#FFA0A0':'' }} /></Button>
                                         </ButtonGroup>
                                 </ListItem>
                             )
