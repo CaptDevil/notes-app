@@ -11,6 +11,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import Modal from '@mui/material/Modal';
 import ArchiveWindow from './ArchiveWindow';
 import TrashWindow from './TrashWindow';
+import LightModeIcon from '@mui/icons-material/LightMode';
+import Divider from '@mui/material/Divider';
 
 const style = {
     position: 'absolute',
@@ -30,24 +32,32 @@ function AdvButtons(props) {
     return (
         <div>
             <Box sx={{ boxSizing: 'border-box', borderRadius: '5px', width: '100%', height: 184, padding: '2px 0px', overflowY: 'auto' }}>
-                <List disablePadding>
-                    <ListItem disablePadding divider>
+                <List disablePadding >
+                    <ListItem disablePadding >
                         <ListItemButton onClick={() => setOpenArchives(true)}>
-                            <ListItemIcon><ArchiveIcon /></ListItemIcon>
+                            <ListItemIcon><ArchiveIcon sx={{ color: (props.darkMode) ? 'white' : '' }} /></ListItemIcon>
                             <ListItemText primary='Archive'/>
                         </ListItemButton>
                     </ListItem>
-                    <ListItem disablePadding divider>
+                    <Divider sx={{ backgroundColor: (props.darkMode) ? 'white' : '' }} />
+                    <ListItem disablePadding >
                         <ListItemButton onClick={() => setOpenTrash(true)}>
-                            <ListItemIcon><DeleteIcon /></ListItemIcon>
+                            <ListItemIcon><DeleteIcon sx={{ color: (props.darkMode) ? 'white' : '' }} /></ListItemIcon>
                             <ListItemText primary='Trash'/>
                         </ListItemButton>
                     </ListItem>
-                    <ListItem disablePadding>
-                        <ListItemButton onClick={() =>  (props.darkMode) ? props.setDarkMode(false) : props.setDarkMode(true)}>
-                            <ListItemIcon><ModeNightIcon /></ListItemIcon>
-                            <ListItemText primary='Dark Mode'/>
-                        </ListItemButton>
+                    <Divider sx={{ backgroundColor: (props.darkMode) ? 'white' : '' }} />
+                    <ListItem disablePadding >
+                        {(props.darkMode) ? 
+                            <ListItemButton onClick={() =>  (props.darkMode) ? props.setDarkMode(false) : props.setDarkMode(true)}>
+                                <ListItemIcon><LightModeIcon sx={{ color: (props.darkMode) ? 'white' : '' }} /></ListItemIcon>
+                                <ListItemText primary='Light Mode'/>
+                            </ListItemButton> :
+                            <ListItemButton onClick={() =>  (props.darkMode) ? props.setDarkMode(false) : props.setDarkMode(true)}>
+                                <ListItemIcon><ModeNightIcon sx={{ color: (props.darkMode) ? 'white' : '' }} /></ListItemIcon>
+                                <ListItemText primary='Dark Mode'/>
+                            </ListItemButton>
+                        }
                     </ListItem>
                 </List>
             </Box>

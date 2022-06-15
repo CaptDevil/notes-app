@@ -32,7 +32,7 @@ function Header(props) {
 
     return (
         <Container maxWidth='md'>
-            <div style={{ margin: '20px 5px', display: 'flex', justifyContent: 'space-between' }}>
+            <div style={{ margin: '0px 5px', padding: '20px 0px', display: 'flex', justifyContent: 'space-between' }}>
                 <Typography variant='h5' >Notes App</Typography>
                 { (props.user === null) ? <Button variant='text' size='small' onClick={() => setLoginButton(true)}>Login</Button> : <Button variant='text' size='small' onClick={() => {
                     localStorage.removeItem('user')
