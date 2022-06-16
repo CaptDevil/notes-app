@@ -27,14 +27,16 @@ function Header(props) {
     const [loginDetails, setLoginDetails] = React.useState({ email: '', password: '' });
 
     React.useEffect(() => {
-        if(props.user === '')
+        if(props.user === '' || props.user === null)
             setLoginButton(true)
+        else
+            setLoginButton(false)
     }, [props.user])
 
     return (
         <Container maxWidth='md'>
             <div style={{ margin: '0px 5px', padding: '20px 0px', display: 'flex', justifyContent: 'space-between' }}>
-                <Typography variant='h5' >Notes App</Typography>
+                <Button disableRipple variant='text' style={{ textTransform: 'none', color: (props.darkMode)?'white':'black', padding: '0px 5px' }} onClick={() => console.log('about us')}><Typography variant='h5' >Notes App</Typography></Button>
                 { (props.user === '' || props.user === null) ? 
                 <Tooltip title='Click to login'><Button variant='text' size='small' onClick={() => setLoginButton(true)}>Login</Button></Tooltip> :
                 <Tooltip title='Click to logout'><Button variant='text' size='small' onClick={() => {
