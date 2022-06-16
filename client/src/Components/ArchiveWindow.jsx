@@ -13,6 +13,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import UnarchiveIcon from '@mui/icons-material/Unarchive';
 import Input from '@mui/material/Input';
 import Divider from '@mui/material/Divider';
+import Tooltip from '@mui/material/Tooltip';
 import axios from 'axios';
 
 const style = {
@@ -67,26 +68,30 @@ function ArchiveWindow(props) {
                                                     <ListItemText><Typography variant='caption'>{(note.body !== '') ? note.body.substring(0,20)+'...' : ''}</Typography></ListItemText>
                                                 </ListItemButton>
                                                 <ButtonGroup orientation='vertical' disableElevation variant='text' size='small'>
-                                                    <Button style={{ color: '#3E7D1E', border: 'white' }} onClick={() => {
-                                                        axios.post(`/unarchive/${note._id}`, { user: props.user })
-                                                            .then((res) => {
-                                                                if(res.data === 'done') {
-                                                                    if(selectedNote._id === note._id)
-                                                                        setSelectedNote({})
-                                                                    props.setRefresh(true)
-                                                                }
-                                                            })
-                                                    }}><UnarchiveIcon fontSize='small' sx={{ color: (props.darkMode)?'#D8FFD8':'' }} /></Button>
-                                                    <Button style={{ color: '#FF5B5B' }} onClick={() => {
-                                                        axios.post(`/trash/${note._id}`,{ user: props.user })
-                                                            .then((res) => {
-                                                                if(res.data === 'done') {
-                                                                    if(props.selected === note._id)
-                                                                        props.getSelected('')
-                                                                    props.setRefresh(true)
-                                                                }
-                                                            })
-                                                    }}><DeleteIcon fontSize='small' sx={{ color: (props.darkMode)?'#FFA0A0':'' }} /></Button>
+                                                    <Tooltip title='Unarchive'>
+                                                        <Button style={{ color: '#3E7D1E', border: 'white' }} onClick={() => {
+                                                            axios.post(`/unarchive/${note._id}`, { user: props.user })
+                                                                .then((res) => {
+                                                                    if(res.data === 'done') {
+                                                                        if(selectedNote._id === note._id)
+                                                                            setSelectedNote({})
+                                                                        props.setRefresh(true)
+                                                                    }
+                                                                })
+                                                        }}><UnarchiveIcon fontSize='small' sx={{ color: (props.darkMode)?'#D8FFD8':'' }} /></Button>
+                                                    </Tooltip>
+                                                    <Tooltip title='Move to trash'>
+                                                        <Button style={{ color: '#FF5B5B' }} onClick={() => {
+                                                            axios.post(`/trash/${note._id}`,{ user: props.user })
+                                                                .then((res) => {
+                                                                    if(res.data === 'done') {
+                                                                        if(props.selected === note._id)
+                                                                            props.getSelected('')
+                                                                        props.setRefresh(true)
+                                                                    }
+                                                                })
+                                                        }}><DeleteIcon fontSize='small' sx={{ color: (props.darkMode)?'#FFA0A0':'' }} /></Button>
+                                                    </Tooltip>
                                                 </ButtonGroup>
                                         </ListItem>
                                     )
