@@ -7,6 +7,7 @@ import Modal from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
 import Paper from '@mui/material/Paper';
 import Divider from '@mui/material/Divider';
+import Tooltip from '@mui/material/Tooltip';
 import axios from 'axios';
 
 const style = {
@@ -34,11 +35,13 @@ function Header(props) {
         <Container maxWidth='md'>
             <div style={{ margin: '0px 5px', padding: '20px 0px', display: 'flex', justifyContent: 'space-between' }}>
                 <Typography variant='h5' >Notes App</Typography>
-                { (props.user === '' || props.user === null) ? <Button variant='text' size='small' onClick={() => setLoginButton(true)}>Login</Button> : <Button variant='text' size='small' onClick={() => {
+                { (props.user === '' || props.user === null) ? 
+                <Tooltip title='Click to login'><Button variant='text' size='small' onClick={() => setLoginButton(true)}>Login</Button></Tooltip> :
+                <Tooltip title='Click to logout'><Button variant='text' size='small' onClick={() => {
                     localStorage.removeItem('user')
                     props.setUser('')
                     setLoginButton(true)
-                }}>{props.user}</Button>}
+                }}>{props.user}</Button></Tooltip>}
                 <Modal
                     open={loginButton}
                     onClose={() => setLoginButton(false)}

@@ -14,6 +14,7 @@ import RestoreFromTrashIcon from '@mui/icons-material/RestoreFromTrash';
 import Input from '@mui/material/Input';
 import Divider from '@mui/material/Divider';
 import Modal from '@mui/material/Modal';
+import Tooltip from '@mui/material/Tooltip';
 import axios from 'axios';
 
 const style = {
@@ -58,20 +59,24 @@ function TrashWindow(props) {
                                                     <ListItemText><Typography variant='caption'>{(note.body !== '') ? note.body.substring(0,20)+'...' : ''}</Typography></ListItemText>
                                                 </ListItemButton>
                                                 <ButtonGroup orientation='vertical' disableElevation variant='text' size='small'>
-                                                    <Button size='small' style={{ color: '#3E7D1E', border: 'white' }} onClick={() => {
-                                                        axios.post(`/restore/${note._id}`, { user: props.user })
-                                                            .then((res) => {
-                                                                if(res.data === 'done') {
-                                                                    if(selectedNote._id === note._id)
-                                                                        setSelectedNote({})
-                                                                    props.setRefresh(true)
-                                                                }
-                                                            })
-                                                    }}><RestoreFromTrashIcon fontSize='small' sx={{ color: (props.darkMode)?'#D8FFD8':'' }} /></Button>
-                                                    <Button size='small' style={{ color: '#FF0101', border: 'white' }} onClick={() => {
-                                                        setOpenConfirmDelete(true)
-                                                        setDeleteID(note._id)
-                                                    }}><DeleteForeverIcon fontSize='small' sx={{ color: (props.darkMode)?'#FF2626':'' }} /></Button>
+                                                    <Tooltip title='Restore'>
+                                                        <Button size='small' style={{ color: '#3E7D1E', border: 'white' }} onClick={() => {
+                                                            axios.post(`/restore/${note._id}`, { user: props.user })
+                                                                .then((res) => {
+                                                                    if(res.data === 'done') {
+                                                                        if(selectedNote._id === note._id)
+                                                                            setSelectedNote({})
+                                                                        props.setRefresh(true)
+                                                                    }
+                                                                })
+                                                        }}><RestoreFromTrashIcon fontSize='small' sx={{ color: (props.darkMode)?'#D8FFD8':'' }} /></Button>
+                                                    </Tooltip>
+                                                    <Tooltip title='Delete'>
+                                                        <Button size='small' style={{ color: '#FF0101', border: 'white' }} onClick={() => {
+                                                            setOpenConfirmDelete(true)
+                                                            setDeleteID(note._id)
+                                                        }}><DeleteForeverIcon fontSize='small' sx={{ color: (props.darkMode)?'#FF2626':'' }} /></Button>
+                                                    </Tooltip>
                                                 </ButtonGroup>
                                         </ListItem>
                                     )
