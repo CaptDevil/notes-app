@@ -8,7 +8,11 @@ import TextField from '@mui/material/TextField';
 import Paper from '@mui/material/Paper';
 import Divider from '@mui/material/Divider';
 import Tooltip from '@mui/material/Tooltip';
+import IconButton from '@mui/material/IconButton';
+import MailIcon from '@mui/icons-material/Mail';
+import GitHubIcon from '@mui/icons-material/GitHub';
 import axios from 'axios';
+import ButtonGroup from '@mui/material/ButtonGroup';
 
 const style = {
     position: 'absolute',
@@ -25,16 +29,19 @@ function Header(props) {
     const [loginButton, setLoginButton] = React.useState(false);
     const [registerDetails, setRegisterDetails] = React.useState({ name: '', email: '', password: '', password1: '' });
     const [loginDetails, setLoginDetails] = React.useState({ email: '', password: '' });
+    const [aboutButton, setAboutButton] = React.useState(false);
 
     React.useEffect(() => {
-        if(props.user === '')
+        if(props.user === '' || props.user === null)
             setLoginButton(true)
+        else
+            setLoginButton(false)
     }, [props.user])
 
     return (
         <Container maxWidth='md'>
             <div style={{ margin: '0px 5px', padding: '20px 0px', display: 'flex', justifyContent: 'space-between' }}>
-                <Typography variant='h5' >Notes App</Typography>
+                <Button disableRipple variant='text' style={{ textTransform: 'none', color: (props.darkMode)?'white':'black', padding: '0px 5px' }} onClick={() => setAboutButton(true)}><Typography variant='h5' >Notes App</Typography></Button>
                 { (props.user === '' || props.user === null) ? 
                 <Tooltip title='Click to login'><Button variant='text' size='small' onClick={() => setLoginButton(true)}>Login</Button></Tooltip> :
                 <Tooltip title='Click to logout'><Button variant='text' size='small' onClick={() => {
@@ -97,6 +104,32 @@ function Header(props) {
                                 <Button type='submit' sx={{ margin: '20px 0', float: 'right' }} size='small' variant='contained' color='success'>Login</Button>
                             </form>
                         </Paper>
+                    </Box>
+                </Modal>
+                <Modal
+                    open={aboutButton}
+                    onClose={() => setAboutButton(false)}
+                >
+                    <Box sx={{ ...style, width: '50%', backgroundColor: (props.darkMode) ? '#191A1A' : 'white', color: (props.darkMode) ? 'white' : '' }}>
+                        <Container>
+                            <Typography variant='h5'>About Us</Typography>
+                            <Typography variant='body1'>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Laborum labore autem quasi vero doloribus cum qui, blanditiis, quam mollitia beatae dolore magni fugiat quo ea impedit placeat accusamus veritatis cumque!</Typography>
+                            <div style={{ padding: '20px 0px 5px 0px' }}>
+                                <Typography variant='subtitle1'>Contact Us:</Typography>
+                                <ButtonGroup>
+                                    <Tooltip title='Mail'>
+                                        <IconButton style={{ color: (props.darkMode)?'white':'black' }} target='_blank' href='mailto:prabhudutta.sarangi@gmail.com'>
+                                            <MailIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                    <Tooltip title='GitHub'>
+                                        <IconButton style={{ color: (props.darkMode)?'white':'black' }} target='_blank' href='https://github.com/CaptDevil/notes-app' >
+                                            <GitHubIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                </ButtonGroup>
+                            </div>
+                        </Container>
                     </Box>
                 </Modal>
             </div>
