@@ -9,7 +9,6 @@ import Paper from '@mui/material/Paper';
 import Divider from '@mui/material/Divider';
 import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
-import MailIcon from '@mui/icons-material/Mail';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import axios from 'axios';
 import ButtonGroup from '@mui/material/ButtonGroup';
@@ -117,11 +116,6 @@ function Header(props) {
                             <div style={{ padding: '20px 0px 5px 0px' }}>
                                 <Typography variant='subtitle1'>Contact Us:</Typography>
                                 <ButtonGroup>
-                                    <Tooltip title='Mail'>
-                                        <IconButton style={{ color: (props.darkMode)?'white':'black' }} target='_blank' href='mailto:prabhudutta.sarangi@gmail.com'>
-                                            <MailIcon />
-                                        </IconButton>
-                                    </Tooltip>
                                     <Tooltip title='GitHub'>
                                         <IconButton style={{ color: (props.darkMode)?'white':'black' }} target='_blank' href='https://github.com/CaptDevil/notes-app' >
                                             <GitHubIcon />
