@@ -57,54 +57,56 @@ function NotesList(props) {
                         {notes.map((note, index) => {
                             return (
                                 <ListItem disablePadding selected={(note._id === props.selected)} divider key={index} style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                        <ListItemButton style={{ display: 'block', paddingTop: '2px', width: '90%' }} onClick={() => props.getSelected(note._id)}>
-                                            <ListItemText><Typography variant='body1'>{note.heading}</Typography></ListItemText>
-                                            <ListItemText><Typography variant='caption'>{(note.body !== '') ? note.body.substring(0,20)+'...' : ''}</Typography></ListItemText>
-                                        </ListItemButton>
-                                        <IconButton sx={{ color: (props.darkMode)?'white':'' }} onClick={(e) => setAnchorEl(e.currentTarget)}>
-                                            <MoreVertIcon />
-                                        </IconButton>
-                                        <Menu
-                                            PaperProps={{
-                                                style: {
-                                                    backgroundColor: (props.darkMode)?'black':'white'
-                                                }
-                                            }}
-                                            open={openMenu}
-                                            anchorEl={anchorEl}
-                                            onClose={() => setAnchorEl(null)}
-                                        >
-                                            <MenuItem style={{ color: (props.darkMode)?'white':'black', border: 'none' }} onClick={() => {
-                                                setAnchorEl(null)
-                                                axios.post(`/archive/${note._id}`, { user: props.user })
-                                                    .then((res) => {
-                                                        if(res.data === 'done') {
-                                                            if(props.selected === note._id)
-                                                                props.getSelected('')
-                                                            props.setRefresh(true)
-                                                        }
-                                                    })
-                                                }}>
-                                                <Typography variant='body2'>Archive</Typography>
-                                            </MenuItem>
-                                            <MenuItem style={{ color: (props.darkMode)?'white':'black', border: 'none' }} onClick={() => {
-                                                setAnchorEl(null)
-                                                console.log('Label window')
-                                                }}><Typography variant='body2'>Labels</Typography>
-                                            </MenuItem>
-                                            <MenuItem style={{ color: (props.darkMode)?'white':'black' }} onClick={() => {
-                                                setAnchorEl(null)
-                                                axios.post(`/trash/${note._id}`,{ user: props.user })
-                                                    .then((res) => {
-                                                        if(res.data === 'done') {
-                                                            if(props.selected === note._id)
-                                                                props.getSelected('')
-                                                            props.setRefresh(true)
-                                                        }
-                                                    })
-                                                }}><Typography variant='body2'>Trash</Typography>
-                                            </MenuItem>
-                                        </Menu>
+                                    <ListItemButton style={{ display: 'block', paddingTop: '2px', width: '90%' }} onClick={() => props.getSelected(note._id)}>
+                                        <ListItemText><Typography variant='body1'>{note.heading}</Typography></ListItemText>
+                                        <ListItemText><Typography variant='caption'>{(note.body !== '') ? note.body.substring(0,20)+'...' : ''}</Typography></ListItemText>
+                                    </ListItemButton>
+                                    <IconButton sx={{ color: (props.darkMode)?'white':'' }} onClick={(e) => setAnchorEl(e.currentTarget)}>
+                                        <MoreVertIcon />
+                                    </IconButton>
+                                    <Menu
+                                        key={note._id}
+                                        PaperProps={{
+                                            style: {
+                                                backgroundColor: (props.darkMode)?'black':'white'
+                                            }
+                                        }}
+                                        open={openMenu}
+                                        anchorEl={anchorEl}
+                                        onClose={() => setAnchorEl(null)}
+                                    >
+                                        <MenuItem key={`archive-${note._id}`} style={{ color: (props.darkMode)?'white':'black', border: 'none' }} onClick={() => {
+                                            setAnchorEl(null)
+                                            console.log(note)
+                                            /*axios.post(`/archive/${note._id}`, { user: props.user })
+                                                .then((res) => {
+                                                    if(res.data === 'done') {
+                                                        if(props.selected === note._id)
+                                                            props.getSelected('')
+                                                        props.setRefresh(true)
+                                                    }
+                                                })*/
+                                            }}>
+                                            <Typography variant='body2'><ArchiveIcon sx={{ color: (props.darkMode)?'white':'black', border: 'none' }} />Archive</Typography>
+                                        </MenuItem>
+                                        <MenuItem key={`label-${note._id}`} style={{ color: (props.darkMode)?'white':'black', border: 'none' }} onClick={() => {
+                                            setAnchorEl(null)
+                                            console.log('Label window')
+                                            }}><Typography variant='body2'>Labels</Typography>
+                                        </MenuItem>
+                                        <MenuItem key={`delete-${note._id}`} style={{ color: (props.darkMode)?'white':'black' }} onClick={() => {
+                                            setAnchorEl(null)
+                                            axios.post(`/trash/${note._id}`,{ user: props.user })
+                                                .then((res) => {
+                                                    if(res.data === 'done') {
+                                                        if(props.selected === note._id)
+                                                            props.getSelected('')
+                                                        props.setRefresh(true)
+                                                    }
+                                                })
+                                            }}><Typography variant='body2'><DeleteIcon sx={{ color: (props.darkMode)?'white':'black', border: 'none' }} />Trash</Typography>
+                                        </MenuItem>
+                                    </Menu>
                                 </ListItem>
                             )
                         })}
