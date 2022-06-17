@@ -16,9 +16,15 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import Divider from '@mui/material/Divider';
 import Tooltip from '@mui/material/Tooltip';
+import IconButton from '@mui/material/IconButton';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 
 function NotesList(props) {
     const [notes, setNotes] = React.useState([]);
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const openMenu = Boolean(anchorEl);
     
     React.useEffect(() => {
         if(props.refresh === true && props.user!==null) {
@@ -55,32 +61,50 @@ function NotesList(props) {
                                             <ListItemText><Typography variant='body1'>{note.heading}</Typography></ListItemText>
                                             <ListItemText><Typography variant='caption'>{(note.body !== '') ? note.body.substring(0,20)+'...' : ''}</Typography></ListItemText>
                                         </ListItemButton>
-                                        <ButtonGroup orientation='vertical' disableElevation variant='text' size='small'>
-                                            <Tooltip title='Archive'>
-                                                <Button style={{ color: '#3E7D1E', border: 'none' }} onClick={() => {
-                                                    axios.post(`/archive/${note._id}`, { user: props.user })
-                                                        .then((res) => {
-                                                            if(res.data === 'done') {
-                                                                if(props.selected === note._id)
-                                                                    props.getSelected('')
-                                                                props.setRefresh(true)
-                                                            }
-                                                        })
-                                                }}><ArchiveIcon fontSize='small' sx={{ color: (props.darkMode)?'#D8FFD8':'' }} /></Button>
-                                            </Tooltip>
-                                            <Tooltip title='Move to trash'>
-                                                <Button style={{ color: '#FF6E6E' }} onClick={() => {
-                                                    axios.post(`/trash/${note._id}`,{ user: props.user })
-                                                        .then((res) => {
-                                                            if(res.data === 'done') {
-                                                                if(props.selected === note._id)
-                                                                    props.getSelected('')
-                                                                props.setRefresh(true)
-                                                            }
-                                                        })
-                                                }}><DeleteIcon fontSize='small' sx={{ color: (props.darkMode)?'#FFA0A0':'' }} /></Button>
-                                            </Tooltip>
-                                        </ButtonGroup>
+                                        <IconButton sx={{ color: (props.darkMode)?'white':'' }} onClick={(e) => setAnchorEl(e.currentTarget)}>
+                                            <MoreVertIcon />
+                                        </IconButton>
+                                        <Menu
+                                            PaperProps={{
+                                                style: {
+                                                    backgroundColor: (props.darkMode)?'black':'white'
+                                                }
+                                            }}
+                                            open={openMenu}
+                                            anchorEl={anchorEl}
+                                            onClose={() => setAnchorEl(null)}
+                                        >
+                                            <MenuItem style={{ color: (props.darkMode)?'white':'black', border: 'none' }} onClick={() => {
+                                                setAnchorEl(null)
+                                                axios.post(`/archive/${note._id}`, { user: props.user })
+                                                    .then((res) => {
+                                                        if(res.data === 'done') {
+                                                            if(props.selected === note._id)
+                                                                props.getSelected('')
+                                                            props.setRefresh(true)
+                                                        }
+                                                    })
+                                                }}>
+                                                <Typography variant='body2'>Archive</Typography>
+                                            </MenuItem>
+                                            <MenuItem style={{ color: (props.darkMode)?'white':'black', border: 'none' }} onClick={() => {
+                                                setAnchorEl(null)
+                                                console.log('Label window')
+                                                }}><Typography variant='body2'>Labels</Typography>
+                                            </MenuItem>
+                                            <MenuItem style={{ color: (props.darkMode)?'white':'black' }} onClick={() => {
+                                                setAnchorEl(null)
+                                                axios.post(`/trash/${note._id}`,{ user: props.user })
+                                                    .then((res) => {
+                                                        if(res.data === 'done') {
+                                                            if(props.selected === note._id)
+                                                                props.getSelected('')
+                                                            props.setRefresh(true)
+                                                        }
+                                                    })
+                                                }}><Typography variant='body2'>Trash</Typography>
+                                            </MenuItem>
+                                        </Menu>
                                 </ListItem>
                             )
                         })}
