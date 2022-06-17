@@ -9,7 +9,7 @@ import ArchiveIcon from '@mui/icons-material/Archive';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 function EditNotes(props) {
-    const [note, setNote] = React.useState({heading: '', body: ''});
+    const [note, setNote] = React.useState({});
 
     React.useEffect(() => {
         if(note.body !== '' || note.heading !== '') {

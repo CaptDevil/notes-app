@@ -31,17 +31,21 @@ function Header(props) {
     const [aboutButton, setAboutButton] = React.useState(false);
 
     React.useEffect(() => {
-        if(props.user === '' || props.user === null)
+        if(localStorage.getItem('user') === null) {
             setLoginButton(true)
-        else
+            props.setUser('')
+        }
+        else {
             setLoginButton(false)
-    }, [props.user])
+            props.setUser(localStorage.getItem('user'))
+        }
+    }, [])
 
     return (
         <Container maxWidth='md'>
             <div style={{ margin: '0px 5px', padding: '20px 0px', display: 'flex', justifyContent: 'space-between' }}>
                 <Button disableRipple variant='text' style={{ textTransform: 'none', color: (props.darkMode)?'white':'black', padding: '0px 5px' }} onClick={() => setAboutButton(true)}><Typography variant='h5' >Notes App</Typography></Button>
-                { (props.user === '' || props.user === null) ? 
+                { (props.user === '') ? 
                 <Tooltip title='Click to login'><Button variant='text' size='small' onClick={() => setLoginButton(true)}>Login</Button></Tooltip> :
                 <Tooltip title='Click to logout'><Button variant='text' size='small' onClick={() => {
                     localStorage.removeItem('user')

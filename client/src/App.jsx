@@ -6,10 +6,6 @@ function App() {
     const [user, setUser] = React.useState('');
     const [darkMode, setDarkMode] = React.useState(false);
 
-    React.useEffect(() => {
-        setUser(localStorage.getItem('user'))
-    }, [])
-
     return (
         <div style={{ backgroundColor: (darkMode) ? '#191A1A' : '', color: (darkMode) ? 'white' : '', margin: 0, height: '100vh' }}>
             <Header user={user} setUser={setUser} darkMode={darkMode} />
