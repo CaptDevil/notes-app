@@ -20,12 +20,15 @@ import IconButton from '@mui/material/IconButton';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 
 function NotesList(props) {
     const [notes, setNotes] = React.useState([]);
     const [selectedNote, setSelectedNote] = React.useState({});
     const [anchorEl, setAnchorEl] = React.useState(null);
     const openMenu = Boolean(anchorEl);
+    const [anchorEl1, setAnchorEl1] = React.useState(null);
+    const openMenu1 = Boolean(anchorEl1);
     
     React.useEffect(() => {
         if(props.refresh === true && props.user!==null) {
@@ -99,11 +102,12 @@ function NotesList(props) {
                         <Typography variant='body2'>Archive</Typography>
                     </Button>
                 </MenuItem>
-                <MenuItem key={`labels-${selectedNote._id}`} style={{ color: (props.darkMode)?'white':'black', border: 'none' }} onClick={() => {
+                <MenuItem key={`labels-${selectedNote._id}`} style={{ color: (props.darkMode)?'white':'black', border: 'none' }} onClick={(e) => {
                     setAnchorEl(null)
                     console.log('Label window')
+                    setAnchorEl1(e.currentTarget)
                 }}>
-                    <Button disableRipple disableFocusRipple disableTouchRipple disableElevation variant='text' startIcon={<LabelIcon />} sx={{ textTransform: 'none', color: (props.darkMode)?'white':'black', border: 'none'}} >
+                    <Button disableRipple disableFocusRipple disableTouchRipple disableElevation variant='text' fullWidth startIcon={<LabelIcon />} endIcon={<ArrowRightIcon />} sx={{ textTransform: 'none', color: (props.darkMode)?'white':'black', border: 'none'}} >
                         <Typography variant='body2'>Add Labels</Typography>
                     </Button>
                 </MenuItem>
@@ -122,6 +126,20 @@ function NotesList(props) {
                         <Typography variant='body2'>Trash</Typography>
                     </Button>
                 </MenuItem>
+            </Menu>
+            <Menu
+                PaperProps={{
+                    style: {
+                        backgroundColor: (props.darkMode)?'black':'white',
+                    }
+                }}
+                open={openMenu1}
+                anchorEl={anchorEl1}
+                onClose={() => setAnchorEl1(null)}
+            >
+                <MenuItem>Label 1</MenuItem>
+                <MenuItem>Label 2</MenuItem>
+                <MenuItem>Label 3</MenuItem>
             </Menu>
             <AdvButtons user={props.user} refresh={props.refresh} setRefresh={props.setRefresh} darkMode={props.darkMode} setDarkMode={props.setDarkMode} />
         </div>
