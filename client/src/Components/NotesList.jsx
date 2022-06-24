@@ -8,6 +8,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import Button from '@mui/material/Button';
+import ButtonGroup from '@mui/material/ButtonGroup';
 import Container from '@mui/material/Container';
 import AddIcon from '@mui/icons-material/Add';
 import axios from 'axios';
@@ -15,7 +16,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import Divider from '@mui/material/Divider';
 import Tooltip from '@mui/material/Tooltip';
-import LabelIcon from '@mui/icons-material/Label';
 import IconButton from '@mui/material/IconButton';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Menu from '@mui/material/Menu';
@@ -23,7 +23,6 @@ import MenuItem from '@mui/material/MenuItem';
 
 function NotesList(props) {
     const [notes, setNotes] = React.useState([]);
-    const [selectedNote, setSelectedNote] = React.useState({});
     const [anchorEl, setAnchorEl] = React.useState(null);
     const openMenu = Boolean(anchorEl);
     
@@ -62,67 +61,58 @@ function NotesList(props) {
                                         <ListItemText><Typography variant='body1'>{note.heading}</Typography></ListItemText>
                                         <ListItemText><Typography variant='caption'>{(note.body !== '') ? note.body.substring(0,20)+'...' : ''}</Typography></ListItemText>
                                     </ListItemButton>
-                                    <IconButton sx={{ color: (props.darkMode)?'white':'' }} onClick={(e) => {
-                                        setAnchorEl(e.currentTarget)
-                                        setSelectedNote(note)
-                                    }}>
+                                    <IconButton sx={{ color: (props.darkMode)?'white':'' }} onClick={(e) => setAnchorEl(e.currentTarget)}>
                                         <MoreVertIcon />
                                     </IconButton>
+                                    <Menu
+                                        key={note._id}
+                                        PaperProps={{
+                                            style: {
+                                                backgroundColor: (props.darkMode)?'black':'white'
+                                            }
+                                        }}
+                                        open={openMenu}
+                                        anchorEl={anchorEl}
+                                        onClose={() => setAnchorEl(null)}
+                                    >
+                                        <MenuItem key={`archive-${note._id}`} style={{ color: (props.darkMode)?'white':'black', border: 'none' }} onClick={() => {
+                                            setAnchorEl(null)
+                                            console.log(note)
+                                            /*axios.post(`/archive/${note._id}`, { user: props.user })
+                                                .then((res) => {
+                                                    if(res.data === 'done') {
+                                                        if(props.selected === note._id)
+                                                            props.getSelected('')
+                                                        props.setRefresh(true)
+                                                    }
+                                                })*/
+                                            }}>
+                                            <Typography variant='body2'><ArchiveIcon sx={{ color: (props.darkMode)?'white':'black', border: 'none' }} />Archive</Typography>
+                                        </MenuItem>
+                                        <MenuItem key={`label-${note._id}`} style={{ color: (props.darkMode)?'white':'black', border: 'none' }} onClick={() => {
+                                            setAnchorEl(null)
+                                            console.log('Label window')
+                                            }}><Typography variant='body2'>Labels</Typography>
+                                        </MenuItem>
+                                        <MenuItem key={`delete-${note._id}`} style={{ color: (props.darkMode)?'white':'black' }} onClick={() => {
+                                            setAnchorEl(null)
+                                            axios.post(`/trash/${note._id}`,{ user: props.user })
+                                                .then((res) => {
+                                                    if(res.data === 'done') {
+                                                        if(props.selected === note._id)
+                                                            props.getSelected('')
+                                                        props.setRefresh(true)
+                                                    }
+                                                })
+                                            }}><Typography variant='body2'><DeleteIcon sx={{ color: (props.darkMode)?'white':'black', border: 'none' }} />Trash</Typography>
+                                        </MenuItem>
+                                    </Menu>
                                 </ListItem>
                             )
                         })}
                     </List>
                 </Paper>
             </Box>
-            <Menu
-                PaperProps={{
-                    style: {
-                        backgroundColor: (props.darkMode)?'black':'white',
-                    }
-                }}
-                open={openMenu}
-                anchorEl={anchorEl}
-                onClose={() => setAnchorEl(null)}
-            >
-                <MenuItem key={`archive-${selectedNote._id}`} style={{ color: (props.darkMode)?'white':'black', border: 'none' }} onClick={() => {
-                    setAnchorEl(null)
-                    axios.post(`/archive/${selectedNote._id}`, { user: props.user })
-                        .then((res) => {
-                            if(res.data === 'done') {
-                                if(props.selected === selectedNote._id)
-                                    props.getSelected('')
-                                props.setRefresh(true)
-                            }
-                        })
-                }}>
-                    <Button disableRipple disableFocusRipple disableTouchRipple disableElevation variant='text' startIcon={<ArchiveIcon />} sx={{ textTransform: 'none', color: (props.darkMode)?'white':'black', border: 'none'}} >
-                        <Typography variant='body2'>Archive</Typography>
-                    </Button>
-                </MenuItem>
-                <MenuItem key={`labels-${selectedNote._id}`} style={{ color: (props.darkMode)?'white':'black', border: 'none' }} onClick={() => {
-                    setAnchorEl(null)
-                    console.log('Label window')
-                }}>
-                    <Button disableRipple disableFocusRipple disableTouchRipple disableElevation variant='text' startIcon={<LabelIcon />} sx={{ textTransform: 'none', color: (props.darkMode)?'white':'black', border: 'none'}} >
-                        <Typography variant='body2'>Add Labels</Typography>
-                    </Button>
-                </MenuItem>
-                <MenuItem key={`delete-${selectedNote._id}`} style={{ color: (props.darkMode)?'white':'black' }} onClick={() => {
-                    setAnchorEl(null)
-                    axios.post(`/trash/${selectedNote._id}`,{ user: props.user })
-                        .then((res) => {
-                            if(res.data === 'done') {
-                                if(props.selected === selectedNote._id)
-                                    props.getSelected('')
-                                props.setRefresh(true)
-                            }
-                        })
-                }}>
-                    <Button disableRipple disableFocusRipple disableTouchRipple disableElevation variant='text' startIcon={<DeleteIcon />} sx={{ textTransform: 'none', color: (props.darkMode)?'white':'black', border: 'none'}} >
-                        <Typography variant='body2'>Trash</Typography>
-                    </Button>
-                </MenuItem>
-            </Menu>
             <AdvButtons user={props.user} refresh={props.refresh} setRefresh={props.setRefresh} darkMode={props.darkMode} setDarkMode={props.setDarkMode} />
         </div>
     );
