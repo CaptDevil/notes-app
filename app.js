@@ -17,7 +17,7 @@ mongoose.connect(process.env.MONGODB_URI, (err) => {
     if(err)
         throw err
     else
-        console.log('Connected to database...') // test
+        console.log('Connected to database...')
 })
 require('./model/note')
 require('./model/user')
