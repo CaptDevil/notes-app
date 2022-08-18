@@ -5,7 +5,7 @@ import axios from 'axios';
 
 function App() {
     const [token, setToken] = React.useState(localStorage.getItem('token'));
-    const [darkMode, setDarkMode] = React.useState(false);
+    const [darkMode, setDarkMode] = React.useState(localStorage.getItem('dark-mode'));
     const [user, setUser] = React.useState('');
 
     React.useEffect(() => {
@@ -24,6 +24,8 @@ function App() {
     }, [token])
 
     React.useEffect(() => {
+        if(darkMode === null)
+            setDarkMode(false)
         localStorage.setItem('dark-mode', darkMode)
     }, [darkMode])
 
