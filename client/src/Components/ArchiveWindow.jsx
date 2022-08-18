@@ -32,15 +32,17 @@ function ArchiveWindow(props) {
     const [selectedNote, setSelectedNote] = React.useState({});
 
     React.useEffect(() => {
-        axios.post('/allnotes', { user: props.user, archive: true, trash: false })
-            .then((res) => setNotes(res.data))
+        if(props.token !== null && props.token !== '') {
+            axios.post('/allnotes', { token: props.token, archive: true, trash: false })
+                .then((res) => setNotes(res.data))
+        }
     }, [props.refresh, props.openArchives])
 
     React.useEffect(() => {
-        if(selectedNote.body !== '' || selectedNote.heading !== '') {
+        if((selectedNote.body !== '' || selectedNote.heading !== '') && (Object.keys(selectedNote).length > 0) && props.token !== null && props.token !== '') {
             let interval = setTimeout(() => {
                 // console.log(note)
-                axios.post(`/updatenote/`, selectedNote)
+                axios.post(`/updatenote/`, {_id: selectedNote._id, heading: selectedNote.heading, body: selectedNote.body, token: props.token})
                     .then(() => props.setRefresh(true))
             }, 3000)
             return () => {
@@ -70,7 +72,7 @@ function ArchiveWindow(props) {
                                                 <ButtonGroup orientation='vertical' disableElevation variant='text' size='small'>
                                                     <Tooltip title='Unarchive'>
                                                         <Button style={{ color: '#3E7D1E', border: 'white' }} onClick={() => {
-                                                            axios.post(`/unarchive/${note._id}`, { user: props.user })
+                                                            axios.post(`/unarchive/${note._id}`, { token: props.token })
                                                                 .then((res) => {
                                                                     if(res.data === 'done') {
                                                                         if(selectedNote._id === note._id)
@@ -82,7 +84,7 @@ function ArchiveWindow(props) {
                                                     </Tooltip>
                                                     <Tooltip title='Move to trash'>
                                                         <Button style={{ color: '#FF5B5B' }} onClick={() => {
-                                                            axios.post(`/trash/${note._id}`,{ user: props.user })
+                                                            axios.post(`/trash/${note._id}`,{ token: props.token })
                                                                 .then((res) => {
                                                                     if(res.data === 'done') {
                                                                         if(props.selected === note._id)

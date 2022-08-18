@@ -65,13 +65,13 @@ function AdvButtons(props) {
                 open={openArchives}
                 onClose={() => setOpenArchives(false)}
             >
-                <ArchiveWindow user={props.user} openArchives={openArchives} refresh={props.refresh} setRefresh={props.setRefresh} darkMode={props.darkMode} />
+                <ArchiveWindow token={props.token} openArchives={openArchives} refresh={props.refresh} setRefresh={props.setRefresh} darkMode={props.darkMode} />
             </Modal>
             <Modal
                 open={openTrash}
                 onClose={() => setOpenTrash(false)}
             >
-                <TrashWindow user={props.user} openTrash={openTrash} refresh={props.refresh} setRefresh={props.setRefresh} darkMode={props.darkMode} />
+                <TrashWindow token={props.token} openTrash={openTrash} refresh={props.refresh} setRefresh={props.setRefresh} darkMode={props.darkMode} />
             </Modal>
         </div>
     );

@@ -35,8 +35,10 @@ function TrashWindow(props) {
     const [deleteID, setDeleteID] = React.useState('');
 
     React.useEffect(() => {
-        axios.post('/alltrash', { user: props.user })
-            .then((res) => setNotes(res.data))
+        if(props.token !== null && props.token !== '') {
+            axios.post('/alltrash', { token: props.token })
+                .then((res) => setNotes(res.data))
+        }
     }, [props.refresh, props.openTrash])
 
     return (
@@ -61,7 +63,7 @@ function TrashWindow(props) {
                                                 <ButtonGroup orientation='vertical' disableElevation variant='text' size='small'>
                                                     <Tooltip title='Restore'>
                                                         <Button size='small' style={{ color: '#3E7D1E', border: 'white' }} onClick={() => {
-                                                            axios.post(`/restore/${note._id}`, { user: props.user })
+                                                            axios.post(`/restore/${note._id}`, { token: props.token })
                                                                 .then((res) => {
                                                                     if(res.data === 'done') {
                                                                         if(selectedNote._id === note._id)
@@ -120,7 +122,7 @@ function TrashWindow(props) {
                         }}>Cancel</Button>
                         <Button color='error' size='small' sx={{ marginLeft: '5px' }} variant='contained' onClick={() => {
                             if(deleteID !== '') {
-                                axios.post(`/delete/${deleteID}`, {user: props.user})
+                                axios.post(`/delete/${deleteID}`, {token: props.token})
                                     .then((res) => {
                                         if(res.data === 'done') {
                                             if(deleteID === selectedNote._id)
