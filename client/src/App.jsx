@@ -23,6 +23,10 @@ function App() {
         }
     }, [token])
 
+    React.useEffect(() => {
+        localStorage.setItem('dark-mode', darkMode)
+    }, [darkMode])
+
     return (
         <div style={{ backgroundColor: (darkMode) ? '#191A1A' : '', color: (darkMode) ? 'white' : '', margin: 0, height: '100vh' }}>
             <Header user={user} setUser={setUser} token={token} setToken={setToken} darkMode={darkMode} />
