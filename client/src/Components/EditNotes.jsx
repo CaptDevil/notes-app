@@ -12,10 +12,9 @@ function EditNotes(props) {
     const [note, setNote] = React.useState({});
 
     React.useEffect(() => {
-        if(note.body !== '' || note.heading !== '') {
+        if((note.body !== '' || note.heading !== '') && props.token !== null && props.token !== '') {
             let interval = setTimeout(() => {
-                // console.log(note)
-                axios.post(`/updatenote/`, note)
+                axios.post(`/updatenote/`, {_id: note._id, heading: note.heading, body: note.body, token: props.token})
                     .then(() => props.setRefresh(true))
             }, 3000)
             return () => {
@@ -26,7 +25,7 @@ function EditNotes(props) {
 
     React.useEffect(() => {
         if(props.selectedNote !== '') {
-            axios.post(`/getnote/${props.selectedNote}`, {user: props.user})
+            axios.post(`/getnote/${props.selectedNote}`, {token: props.token})
                 .then((res) => setNote(res.data))
         }
     },[props.selectedNote])

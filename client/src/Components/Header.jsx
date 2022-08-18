@@ -31,13 +31,18 @@ function Header(props) {
     const [aboutButton, setAboutButton] = React.useState(false);
 
     React.useEffect(() => {
-        if(localStorage.getItem('user') === null) {
+        if(props.token === null) {
             setLoginButton(true)
             props.setUser('')
         }
         else {
             setLoginButton(false)
-            props.setUser(localStorage.getItem('user'))
+            // axios.get(`/loginuser/${localStorage.getItem('token')}`)
+            //     .then((res) => {
+            //         setUser(res.data.user)
+            //         props.setToken(res.data.token)
+            //         // localStorage.setItem('token',res.data.token);
+            //     })
         }
     }, [])
 
@@ -45,10 +50,11 @@ function Header(props) {
         <Container maxWidth='md'>
             <div style={{ margin: '0px 5px', padding: '20px 0px', display: 'flex', justifyContent: 'space-between' }}>
                 <Button disableRipple variant='text' style={{ textTransform: 'none', color: (props.darkMode)?'white':'black', padding: '0px 5px' }} onClick={() => setAboutButton(true)}><Typography variant='h5' >Notes App</Typography></Button>
-                { (props.user === '') ? 
-                <Tooltip title='Click to login'><Button variant='text' size='small' onClick={() => setLoginButton(true)}>Login</Button></Tooltip> :
+                { (props.user === '') ? <Tooltip title='Click to login'><Button variant='text' size='small' onClick={() => setLoginButton(true)}>Login</Button></Tooltip>
+                :
                 <Tooltip title='Click to logout'><Button variant='text' size='small' onClick={() => {
-                    localStorage.removeItem('user')
+                    props.setToken('')
+                    // localStorage.removeItem('token')
                     props.setUser('')
                     setLoginButton(true)
                 }}>{props.user}</Button></Tooltip>}
@@ -66,9 +72,10 @@ function Header(props) {
                                 if(registerDetails.password === registerDetails.password1) {
                                     axios.post('/registeruser', registerDetails)
                                         .then((res) => {
-                                            if(res.data === 'registered') {
-                                                localStorage.setItem('user', registerDetails.email)
-                                                props.setUser(registerDetails.email)
+                                            if(res.status !== 404) {
+                                                props.setToken(res.data.token)
+                                                // localStorage.setItem('user', registerDetails.email)
+                                                props.setUser(res.data.user)
                                                 setRegisterDetails({ name: '', email: '', password: '', password1: '' })
                                                 setLoginButton(false)
                                             }
@@ -92,9 +99,10 @@ function Header(props) {
                                 if(loginDetails.email !== '' && loginDetails.password !== '') {
                                     axios.post('/loginuser', loginDetails)
                                         .then((res) => {
-                                            if(res.data === 'right') {
-                                                localStorage.setItem('user', loginDetails.email)
-                                                props.setUser(loginDetails.email)
+                                            if(res.status !== 404) {
+                                                props.setToken(res.data.token)
+                                                // localStorage.setItem('token', res.data.token)
+                                                props.setUser(res.data.user)
                                                 setLoginDetails({ email: '', password: '' })
                                                 setLoginButton(false)
                                             }

@@ -9,7 +9,7 @@ function MainSection(props) {
 
     React.useEffect(() => {
         setRefresh(true)
-    }, [props.user])
+    }, [props.token])
 
     React.useEffect(() => {
         let timer = setTimeout(() => setRefresh(false), 3000)
@@ -19,8 +19,8 @@ function MainSection(props) {
     return (
         <Container maxWidth='md'>
             <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
-                <NotesList selected={selected} getSelected={(selected) => setSelected(selected)} user={props.user} refresh={refresh} setRefresh={setRefresh} darkMode={props.darkMode} setDarkMode={props.setDarkMode} />
-                <EditNotes selectedNote={selected} user={props.user} refresh={refresh} setRefresh={setRefresh} darkMode={props.darkMode} setDarkMode={props.setDarkMode} />
+                <NotesList selected={selected} getSelected={(selected) => setSelected(selected)} token={props.token} refresh={refresh} setRefresh={setRefresh} darkMode={props.darkMode} setDarkMode={props.setDarkMode} />
+                <EditNotes selectedNote={selected} token={props.token} refresh={refresh} setRefresh={setRefresh} darkMode={props.darkMode} setDarkMode={props.setDarkMode} />
             </div>
         </Container>
     );

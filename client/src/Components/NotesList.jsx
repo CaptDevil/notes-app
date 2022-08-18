@@ -21,14 +21,14 @@ function NotesList(props) {
     const [notes, setNotes] = React.useState([]);
     
     React.useEffect(() => {
-        if(props.refresh === true && props.user!==null) {
-            axios.post('/allnotes', {user: props.user, archive: false, trash: false})
+        if(props.refresh === true && props.token !== null && props.token !== '') {
+            axios.post('/allnotes', {token: props.token, archive: false, trash: false})
                 .then((res) => {
                     setNotes(res.data)
                     props.setRefresh(false)
                 })
         }
-    }, [props.user, props.refresh])
+    }, [props.token, props.refresh])
 
     return (
         <div style={{ width: '30%', margin: '0px 5px' }}>
@@ -37,7 +37,7 @@ function NotesList(props) {
                     <Typography variant='h6' style={{ padding: '2px 15px' }}>Notes List</Typography>
                     <Container>
                         <Button sx={{color: (props.darkMode)?'#00AF00':'#3E7D1E' }} fullWidth size='small' startIcon={<AddIcon />} onClick={() => {
-                            axios.post('/newnote', {user: props.user})
+                            axios.post('/newnote', {token: props.token})
                                 .then((res) => {
                                     props.getSelected(res.data)
                                     props.setRefresh(true)
@@ -58,7 +58,7 @@ function NotesList(props) {
                                         <ButtonGroup orientation='vertical' disableElevation variant='text' size='small'>
                                             <Tooltip title='Archive'>
                                                 <Button style={{ color: '#3E7D1E', border: 'none' }} onClick={() => {
-                                                    axios.post(`/archive/${note._id}`, { user: props.user })
+                                                    axios.post(`/archive/${note._id}`, { token: props.token })
                                                         .then((res) => {
                                                             if(res.data === 'done') {
                                                                 if(props.selected === note._id)
@@ -70,7 +70,7 @@ function NotesList(props) {
                                             </Tooltip>
                                             <Tooltip title='Move to trash'>
                                                 <Button style={{ color: '#FF6E6E' }} onClick={() => {
-                                                    axios.post(`/trash/${note._id}`,{ user: props.user })
+                                                    axios.post(`/trash/${note._id}`,{ token: props.token })
                                                         .then((res) => {
                                                             if(res.data === 'done') {
                                                                 if(props.selected === note._id)
@@ -87,7 +87,7 @@ function NotesList(props) {
                     </List>
                 </Paper>
             </Box>
-            <AdvButtons user={props.user} refresh={props.refresh} setRefresh={props.setRefresh} darkMode={props.darkMode} setDarkMode={props.setDarkMode} />
+            <AdvButtons token={props.token} refresh={props.refresh} setRefresh={props.setRefresh} darkMode={props.darkMode} setDarkMode={props.setDarkMode} />
         </div>
     );
 }

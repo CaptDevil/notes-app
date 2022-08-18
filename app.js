@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const app = express()
 
@@ -10,7 +11,6 @@ app.use(cors({
 }))
 
 app.use(express.urlencoded({ extended: false }))
-
 app.use(express.json())
 
 mongoose.connect(process.env.MONGODB_URI, (err) => {
@@ -25,17 +25,14 @@ require('./model/user')
 const Note = mongoose.model('Note')
 const User = mongoose.model('User')
 
-/*const notes = [
-    {id: '1', heading: 'heading 1', body: 'this is note\nhello'},
-    {id: '2', heading: 'heading 2', body: 'this is note\nhello'},
-    {id: '3', heading: 'heading 3', body: 'this is note\nhello'},
-    {id: '4', heading: 'heading 4', body: 'this is note\nhello'},
-    {id: '5', heading: 'heading 5', body: 'this is note\nhello'}
-]*/
+function verifyToken(token) {
+    const data =  jwt.verify(token, process.env.SECRET_KEY).email
+    return data;
+}
 
 app.post('/allnotes',(req,res) => {
-    const { user, archive, trash } = req.body;
-    Note.find({ user, archive, trash }).sort({_id: -1}).exec((err,docs) => {
+    const { token, archive, trash } = req.body;
+    Note.find({ user: verifyToken(token), archive, trash }).sort({_id: -1}).exec((err,docs) => {
         if(err)
             throw err;
         res.send(docs)
@@ -43,8 +40,8 @@ app.post('/allnotes',(req,res) => {
 })
 
 app.post('/alltrash', (req,res) => {
-    const { user } = req.body;
-    Note.find({ user, trash: true }).sort({_id: -1}).exec((err,docs) => {
+    const { token } = req.body;
+    Note.find({ user: verifyToken(token), trash: true }).sort({_id: -1}).exec((err,docs) => {
         if(err)
             throw err;
         res.send(docs)
@@ -52,8 +49,8 @@ app.post('/alltrash', (req,res) => {
 })
 
 app.post('/getnote/:id',(req,res) => {
-    const { user } = req.body;
-    Note.findOne({_id: req.params.id, user}, (err, docs) => {
+    const { token } = req.body;
+    Note.findOne({_id: req.params.id, user: verifyToken(token)}, (err, docs) => {
         if(err)
             throw err;
         res.send(docs)
@@ -61,8 +58,8 @@ app.post('/getnote/:id',(req,res) => {
 })
 
 app.post('/updatenote',(req,res) => {
-    const { _id, heading, body, user } = req.body;
-    Note.updateOne({_id, user}, { heading, body }, (err) => {
+    const { _id, heading, body, token } = req.body;
+    Note.updateOne({_id, user: verifyToken(token)}, { heading, body }, (err) => {
         if(err)
             throw err;
         // console.log(doc)
@@ -71,7 +68,8 @@ app.post('/updatenote',(req,res) => {
 })
 
 app.post('/newnote',(req,res) => {
-    let note = new Note({ heading: '', body: '', user: req.body.user })
+    const { token } = req.body;
+    let note = new Note({ heading: '', body: '', user: verifyToken(token) })
     note.save((err,doc) => {
         if(err)
             throw err
@@ -90,7 +88,10 @@ app.post('/registeruser', (req,res) => {
                         if(err)
                             throw err
                         // console.log(doc)
-                        res.send('registered');
+                        res.status(200).json({
+                            token: jwt.sign({ email }, process.env.SECRET_KEY),
+                            user: name
+                        });
                     })
                 }
                 else {
@@ -98,11 +99,30 @@ app.post('/registeruser', (req,res) => {
                         if(err)
                             throw err
                         // console.log(doc)
-                        res.send('registered');
+                        res.status(200).json({
+                            token: jwt.sign({ email }, process.env.SECRET_KEY),
+                            user: name
+                        });
                     })
                 }
             })
         })
+    })
+})
+
+app.get('/loginuser/:token', (req,res) => {
+    const { token } = req.params;
+    User.find({email: verifyToken(token)}, (err, doc) => {
+        if(err)
+            throw err
+        if(doc.length !== 0) {
+            res.status(200).json({
+                token: jwt.sign({ email: doc[0].email }, process.env.SECRET_KEY),
+                user: doc[0].name
+            })
+        }
+        else
+            res.sendStatus(404)
     })
 })
 
@@ -114,21 +134,21 @@ app.post('/loginuser', (req,res) => {
         if(doc.length !== 0) {
             bcrypt.compare(password,doc[0].password)
                 .then((result) => {
-                    if(result === true)
-                        res.send('right')
-                    else
-                        res.send('wrong')
+                    (result ? res.status(200).json({
+                        token: jwt.sign({ email: doc[0].email }, process.env.SECRET_KEY),
+                        user: doc[0].name
+                    }) : res.sendStatus(404))
                 })
         }
         else
-            res.send('wrong')
+            res.sendStatus(404)
     })
 })
 
 app.post('/trash/:id', (req,res) => {
-    const { user } = req.body;
+    const { token } = req.body;
     const _id = req.params.id;
-    Note.updateOne({ user, _id }, {trash: true}, (err) => {
+    Note.updateOne({ user: verifyToken(token), _id }, {trash: true}, (err) => {
         if(err)
             throw err
         res.send('done')
@@ -136,9 +156,9 @@ app.post('/trash/:id', (req,res) => {
 })
 
 app.post('/restore/:id', (req,res) => {
-    const { user } = req.body;
+    const { token } = req.body;
     const _id = req.params.id;
-    Note.updateOne({ user, _id }, {trash: false}, (err) => {
+    Note.updateOne({ user: verifyToken(token), _id }, {trash: false}, (err) => {
         if(err)
             throw err
         res.send('done')
@@ -146,9 +166,9 @@ app.post('/restore/:id', (req,res) => {
 })
 
 app.post('/archive/:id', (req,res) => {
-    const { user } = req.body;
+    const { token } = req.body;
     const _id = req.params.id;
-    Note.updateOne({ user, _id }, {archive: true}, (err) => {
+    Note.updateOne({ user: verifyToken(token), _id }, {archive: true}, (err) => {
         if(err)
             throw err
         res.send('done')
@@ -156,9 +176,9 @@ app.post('/archive/:id', (req,res) => {
 })
 
 app.post('/unarchive/:id', (req,res) => {
-    const { user } = req.body;
+    const { token } = req.body;
     const _id = req.params.id;
-    Note.updateOne({ user, _id }, {archive: false}, (err) => {
+    Note.updateOne({ user: verifyToken(token), _id }, {archive: false}, (err) => {
         if(err)
             throw err
         res.send('done')
@@ -166,9 +186,9 @@ app.post('/unarchive/:id', (req,res) => {
 })
 
 app.post('/delete/:id', (req,res) => {
-    const { user } = req.body;
+    const { token } = req.body;
     const _id = req.params.id;
-    Note.deleteOne({ _id, user }, (err, results) => {
+    Note.deleteOne({ _id, user: verifyToken(token) }, (err, results) => {
         if(err)
             throw err
         res.send('done')
